@@ -130,7 +130,10 @@ void MainWidget::initializeGL()
     // Enable back face culling
     glEnable(GL_CULL_FACE);
 
-    geometries = new GeometryEngine;
+    geometries = new GeometryEngine();
+    m_vao.create();
+    m_vvbo.create();
+    m_vcbo.create();
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
@@ -139,19 +142,19 @@ void MainWidget::initializeGL()
 void MainWidget::initShaders()
 {
     // Compile vertex shader
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
+    if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
         close();
 
     // Compile fragment shader
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/fshader.glsl"))
+    if (!m_program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/fshader.glsl"))
         close();
 
     // Link shader pipeline
-    if (!program.link())
+    if (!m_program.link())
         close();
 
     // Bind shader pipeline for use
-    if (!program.bind())
+    if (!m_program.bind())
         close();
 }
 
@@ -199,11 +202,56 @@ void MainWidget::paintGL()
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
-    program.setUniformValue("mvp_matrix", projection * matrix);
+    m_program.setUniformValue("mvp_matrix", projection * matrix);
 
     // Use texture unit 0 which contains cube.png
-    program.setUniformValue("texture", 0);
+    m_program.setUniformValue("texture", 0);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    //location of vertex data arrays must be before they are referenced
+    //but location not important otherwise
+//    static const float vertexPositions[] = {
+//    -1.0f, 0.0f, 0.0f, //(x,y,z) bottom left
+//    1.0f, 0.0f, 0.0f, //bottom right
+//    0.0f, 1.0f, 0.0f //top middle
+//    };
+
+//    static const float vertexColors[] = {
+//    1.0f, .0f, .0f, //red (r,g,b) values for each vertex
+//    .0f, 1.0f, .0f, //green
+//    .0f, .0f, 1.0f //blue
+//    };
+
+//    m_vao.bind(); //sets the Vertex Array Object current to the OpenGL context so we can write attributes to it
+
+//    QOpenGLBuffer m_vvbo(QOpenGLBuffer::VertexBuffer);
+//    m_vvbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+//    m_vvbo.bind();
+//    m_vvbo.allocate(vertexPositions, 9 * sizeof(float));
+//    m_program.enableAttributeArray("position"); //this labels an attribute &quot;position&quot;
+//    //that points to the memory slot from the last buffer allocate()
+//    //the position attribute is an input to our vertex shader
+//    m_program.setAttributeBuffer("position", GL_FLOAT, 0, 3);
+
+//    QOpenGLBuffer m_vcbo(QOpenGLBuffer::VertexBuffer);
+//    m_vcbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+//    m_vcbo.bind();
+//    m_vcbo.allocate(vertexColors, 9 * sizeof(float));
+//    m_program.enableAttributeArray("color"); //this labels an attribute &quot;color&quot;
+//    //that points to the memory slot from the last buffer allocate()
+//    //the color attribute is an input to our vertex shader
+//    m_program.setAttributeBuffer("color", GL_FLOAT, 0, 3);
+
+//    glDrawElements(GL_TRIANGLES, 34, GL_UNSIGNED_SHORT, 0);
+
+//    // Release (unbind) all
+//    m_vvbo.release();
+//    m_vcbo.release();
+//    m_vao.release();
+//    m_program.release();
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    geometries->drawCubeGeometry(&m_program, projection, rotation);
+
+    //geometries->drawCubeGeoTwo(&program);
 }

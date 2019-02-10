@@ -62,6 +62,7 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <QOpenGLVertexArrayObject>
 
 class GeometryEngine;
 
@@ -87,12 +88,20 @@ protected:
 
 private:
     QBasicTimer timer;
-    QOpenGLShaderProgram program;
+    QOpenGLShaderProgram m_program;
     GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
 
     QMatrix4x4 projection;
+
+    GLuint vertexLocation;
+    GLuint colorLocation;
+    GLuint matrixLocation;
+
+    QOpenGLVertexArrayObject m_vao; // Our Vertex Array Object
+    QOpenGLBuffer m_vvbo; // Our vertice Vertex Buffer Object
+    QOpenGLBuffer m_vcbo; // Our color Vertex Buffer Object
 
     QVector2D mousePressPosition;
     QVector3D rotationAxis;

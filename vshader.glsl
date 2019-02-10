@@ -8,8 +8,10 @@ uniform mat4 mvp_matrix;
 
 attribute vec4 a_position;
 attribute vec2 a_texcoord;
+attribute float color;
 
 varying vec2 v_texcoord;
+varying float colr;
 
 void main()
 {
@@ -18,5 +20,6 @@ void main()
 
     // Pass texture coordinate to fragment shader
     // Value will be automatically interpolated to fragments inside polygon faces
-    v_texcoord = a_texcoord;
+    //v_texcoord = a_texcoord;
+    colr = color;
 }

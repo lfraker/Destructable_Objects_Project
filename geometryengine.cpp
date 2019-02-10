@@ -54,6 +54,7 @@
 #include <QVector2D>
 #include <QVector3D>
 
+
 struct VertexData
 {
     QVector3D position;
@@ -67,6 +68,7 @@ GeometryEngine::GeometryEngine()
 
     // Generate 2 VBOs
     arrayBuf.create();
+    arrayBuf2.create();
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
@@ -76,7 +78,9 @@ GeometryEngine::GeometryEngine()
 GeometryEngine::~GeometryEngine()
 {
     arrayBuf.destroy();
+    arrayBuf2.destroy();
     indexBuf.destroy();
+    delete(m_shape);
 }
 
 void GeometryEngine::initCubeGeometry()
@@ -138,37 +142,101 @@ void GeometryEngine::initCubeGeometry()
         20, 20, 21, 22, 23      // Face 5 - triangle strip (v20, v21, v22, v23)
     };
 
+    float verts [] = {
+        -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f
+    };
+
+    QVector3D verticess[] = {
+            QVector3D(1.0f, 2.0f, -1.0f),
+            QVector3D(-1.0f, -1.0f, -1.0f),
+            QVector3D(1.0f, -1.0f, -1.0f)
+        };
+
     // Transfer vertex data to VBO 0
+    m_shape = new Cone(50, 50, 1);
+    m_shape2 = new Sphere(50, 50, 1);
     arrayBuf.bind();
-    arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+    arrayBuf.allocate(m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D));
+    arrayBuf2.bind();
+    arrayBuf2.allocate(m_shape2->getVecs(), m_shape2->numVertices() * sizeof(QVector3D));
+    //arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+    //arrayBuf.allocate(verticess, 3 * sizeof(QVector3D));
+
 
     // Transfer index data to VBO 1
-    indexBuf.bind();
-    indexBuf.allocate(indices, 34 * sizeof(GLushort));
+    //indexBuf.bind();
+    //indexBuf.allocate(indices, 34 * sizeof(GLushort));
 }
 
-void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
+
+
+void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program, QMatrix4x4 projection, QQuaternion rotation)
 {
     // Tell OpenGL which VBOs to use
     arrayBuf.bind();
-    indexBuf.bind();
+    //indexBuf.bind();
 
     // Offset for position
     quintptr offset = 0;
+    //glFrontFace(GL_CW);
+
 
     // Tell OpenGL programmable pipeline how to locate vertex position data
     int vertexLocation = program->attributeLocation("a_position");
     program->enableAttributeArray(vertexLocation);
-    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
 
     // Offset for texture coordinate
-    offset += sizeof(QVector3D);
+    //offset += sizeof(QVector3D);
 
     // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
-    int texcoordLocation = program->attributeLocation("a_texcoord");
-    program->enableAttributeArray(texcoordLocation);
-    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+    //int texcoordLocation = program->attributeLocation("a_texcoord");
+    //program->enableAttributeArray(texcoordLocation);
+    //program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+    int color = program->attributeLocation("color");
+    program->setAttributeValue(color, 1.0f);
+    glDrawArrays(GL_TRIANGLES, 0, m_shape->numVertices());
+
+    program->setAttributeValue(color, 0.0f);
+    glDrawArrays(GL_LINES, 0, m_shape->numVertices());
+
+    glFinish();
+    arrayBuf2.bind();
+    arrayBuf.release();
+
+
+
+    //indexBuf.bind();
+
+    // Offset for position
+    //glFrontFace(GL_CW);
+
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    // Offset for texture coordinate
+    //offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    //int texcoordLocation = program->attributeLocation("a_texcoord");
+    //program->enableAttributeArray(texcoordLocation);
+    //program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    QMatrix4x4 matrix;
+    matrix.translate(-2.0, 0.0, -5.0);
+    matrix.rotate(rotation);
+
+    // Set modelview-projection matrix
+    program->setUniformValue("mvp_matrix", projection * matrix);
+
+    // Draw cube geometry using indices from VBO 1
+    color = program->attributeLocation("color");
+    program->setAttributeValue(color, 1.0f);
+    glDrawArrays(GL_TRIANGLES, 0, m_shape2->numVertices());
+
+    program->setAttributeValue(color, 0.0f);
+    glDrawArrays(GL_LINES, 0, m_shape2->numVertices());
 }
