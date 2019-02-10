@@ -33,49 +33,50 @@ void Cone::computeTriangles()
             float radP = ((PI * 2.0f) * (rCount + 1))/m_param2;
 
             //Top Right
+            float height = m_radius - 0.5f;
 
-            QVector3D vert1 = QVector3D(radiDecr * cos(rad), -m_radius, radiDecr * sin(rad));
+            QVector3D vert1 = QVector3D(radiDecr * cos(rad), -height, radiDecr * sin(rad));
             QVector3D norm1 = QVector3D(0.0f, -1.0f, 0.0f);
 
 
             //Top left
 
-            QVector3D vert2 = QVector3D(radiDecr * cos(radP), -m_radius, radiDecr * sin(radP));
+            QVector3D vert2 = QVector3D(radiDecr * cos(radP), -height, radiDecr * sin(radP));
             QVector3D norm2 = QVector3D(0.0f, -1.0f, 0.0f);
 
             //Bottom left
 
-            QVector3D vert3 = QVector3D((radiDecr - radiInc) * cos(radP), -m_radius, (radiDecr - radiInc) * sin(radP));
+            QVector3D vert3 = QVector3D((radiDecr - radiInc) * cos(radP), -height, (radiDecr - radiInc) * sin(radP));
             QVector3D norm3 = QVector3D(0.0f, -1.0f, 0.0f);
 
 
             //Top Right
 
-            QVector3D vert4 = QVector3D(radiDecr * cos(rad),  -m_radius, radiDecr * sin(rad));
+            QVector3D vert4 = QVector3D(radiDecr * cos(rad),  -height, radiDecr * sin(rad));
             QVector3D norm4 = QVector3D(0.0f, -1.0f, 0.0f);
 
 
             //bottom left
 
-            QVector3D vert5 = QVector3D((radiDecr - radiInc) * cos(radP),- m_radius, (radiDecr - radiInc) * sin(radP));
+            QVector3D vert5 = QVector3D((radiDecr - radiInc) * cos(radP),-height, (radiDecr - radiInc) * sin(radP));
             QVector3D norm5 = QVector3D(0.0f, -1.0f, 0.0f);
 
             //Bottom right
 
-            QVector3D vert6 = QVector3D((radiDecr - radiInc) * cos(rad), -m_radius, (radiDecr - radiInc) * sin(rad));
+            QVector3D vert6 = QVector3D((radiDecr - radiInc) * cos(rad), -height, (radiDecr - radiInc) * sin(rad));
             QVector3D norm6 = QVector3D(0.0f, -1.0f, 0.0f);
 
-            m_vertexData[ctr] = vert1;
-            ctr++;
-            m_vertexData[ctr] = vert2;
-            ctr++;
-            m_vertexData[ctr] = vert3;
-            ctr++;
             m_vertexData[ctr] = vert4;
             ctr++;
             m_vertexData[ctr] = vert5;
             ctr++;
             m_vertexData[ctr] = vert6;
+            ctr++;
+            m_vertexData[ctr] = vert1;
+            ctr++;
+            m_vertexData[ctr] = vert2;
+            ctr++;
+            m_vertexData[ctr] = vert3;
             ctr++;
 
         }
@@ -131,19 +132,19 @@ void Cone::computeTriangles()
                 norm6 = QVector3D(cos(radN) * xzNorm, yNorm, sin(radN) * xzNorm);
             }
 
-
-            m_vertexData[ctr] = vert1;
-            ctr++;
-            m_vertexData[ctr] = vert2;
-            ctr++;
-            m_vertexData[ctr] = vert3;
-            ctr++;
             m_vertexData[ctr] = vert4;
-            ctr++;
-            m_vertexData[ctr] = vert5;
             ctr++;
             m_vertexData[ctr] = vert6;
             ctr++;
+            m_vertexData[ctr] = vert5;
+            ctr++;
+            m_vertexData[ctr] = vert1;
+            ctr++;
+            m_vertexData[ctr] = vert3;
+            ctr++;
+            m_vertexData[ctr] = vert2;
+            ctr++;
+
         }
     }
 

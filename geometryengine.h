@@ -55,7 +55,6 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
-#include <QOpenGLVertexArrayObject>
 #include <shapes/Cone.h>
 #include <shapes/Sphere.h>
 
@@ -73,8 +72,8 @@ private:
     void initCubeGeometry();
     Shape *m_shape;
     Shape *m_shape2;
-    QOpenGLVertexArrayObject arrayBuf;
-    QOpenGLVertexArrayObject arrayBuf2;
+    QOpenGLBuffer arrayBuf;
+    QOpenGLBuffer arrayBuf2;
     QOpenGLBuffer indexBuf;
 };
 

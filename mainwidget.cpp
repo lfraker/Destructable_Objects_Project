@@ -59,7 +59,9 @@ MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    m_vao1(new QOpenGLVertexArrayObject),
+    m_vao2(new QOpenGLVertexArrayObject)
 {
 }
 
@@ -135,6 +137,41 @@ void MainWidget::initializeGL()
     m_vvbo.create();
     m_vcbo.create();
 
+    // Create VAO for first object to render
+    m_vao1->create();
+    m_vao1->bind();
+
+    // Setup VBOs and IBO (use QOpenGLBuffer to buffer data,
+    // specify format, usage hint etc). These will be
+    // remembered by the currently bound VAO
+    m_positionBuffer1.create();
+    m_positionBuffer1.setUsagePattern( QOpenGLBuffer::StreamDraw );
+    m_positionBuffer1.bind();
+    m_shape = new Cylinder(10, 10, 1);
+    m_shape2 = new Cube(10, 10);
+    m_positionBuffer1.allocate( m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
+    m_program.enableAttributeArray("a_position");
+    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+    //int vertexLocation = program->attributeLocation("a_position");
+    //program->enableAttributeArray(vertexLocation);
+    //program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
+
+    // Repeat for buffers of normals, texture coordinates,
+    // tangents, ...
+
+
+    // Create VAO for second object to render
+    m_vao2->create();
+    m_vao2->bind();
+    m_positionBuffer2.create();
+    m_positionBuffer2.setUsagePattern( QOpenGLBuffer::StreamDraw );
+    m_positionBuffer2.bind();
+    m_positionBuffer2.allocate( m_shape2->getVecs(), m_shape2->numVertices() * sizeof(QVector3D) );
+    m_program.enableAttributeArray("a_position");
+    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+
+    // Setup VBOs and IBO for next object
+
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
 }
@@ -180,7 +217,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 20.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -198,7 +235,7 @@ void MainWidget::paintGL()
 
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(0.0, 0.0, -10.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -249,9 +286,32 @@ void MainWidget::paintGL()
 //    m_vcbo.release();
 //    m_vao.release();
 //    m_program.release();
+    quintptr offset = 0;
+    m_vao1->bind();
+    int color = m_program.attributeLocation("color");
+    m_program.setAttributeValue(color, 1.0f);
+    glDrawArrays(GL_TRIANGLES, 0, m_shape->numVertices());
+
+    m_program.setAttributeValue(color, 0.0f);
+    glDrawArrays(GL_LINES, 0, m_shape->numVertices());
+
+    QMatrix4x4 matrix2;
+    matrix2.translate(-2.0, 0.0, -5.0);
+    matrix2.rotate(rotation);
+
+    // Set modelview-projection matrix
+    m_program.setUniformValue("mvp_matrix", projection * matrix2);
+
+    m_vao2->bind();
+    color = m_program.attributeLocation("color");
+    m_program.setAttributeValue(color, 1.0f);
+    glDrawArrays(GL_TRIANGLES, 0, m_shape2->numVertices());
+
+    m_program.setAttributeValue(color, 0.0f);
+    glDrawArrays(GL_LINES, 0, m_shape2->numVertices());
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&m_program, projection, rotation);
+    //geometries->drawCubeGeometry(&m_program, projection, rotation);
 
     //geometries->drawCubeGeoTwo(&program);
 }

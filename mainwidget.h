@@ -63,6 +63,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QOpenGLVertexArrayObject>
+#include <shapes/Cube.h>
+#include <shapes/Cylinder.h>
 
 class GeometryEngine;
 
@@ -107,6 +109,13 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    Shape *m_shape;
+    Shape *m_shape2;
+
+    QOpenGLVertexArrayObject *m_vao1;
+    QOpenGLVertexArrayObject *m_vao2;
+    QOpenGLBuffer m_positionBuffer1;
+    QOpenGLBuffer m_positionBuffer2;
 };
 
 #endif // MAINWIDGET_H

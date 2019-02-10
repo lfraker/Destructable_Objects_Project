@@ -64,15 +64,15 @@ struct VertexData
 GeometryEngine::GeometryEngine()
     : indexBuf(QOpenGLBuffer::IndexBuffer)
 {
-    initializeOpenGLFunctions();
+    //initializeOpenGLFunctions();
 
     // Generate 2 VBOs
-    arrayBuf.create();
-    arrayBuf2.create();
-    indexBuf.create();
+//    arrayBuf.create();
+//    arrayBuf2.create();
+//    indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+    //initCubeGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -157,10 +157,25 @@ void GeometryEngine::initCubeGeometry()
     // Transfer vertex data to VBO 0
     m_shape = new Cone(50, 50, 1);
     m_shape2 = new Sphere(50, 50, 1);
-    arrayBuf.bind();
-    arrayBuf.allocate(m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D));
-    arrayBuf2.bind();
-    arrayBuf2.allocate(m_shape2->getVecs(), m_shape2->numVertices() * sizeof(QVector3D));
+//    arrayBuf = new QOpenGLVertexArrayObject();
+//    m_vao1->create();
+//        m_vao1->bind();
+
+//        // Setup VBOs and IBO (use QOpenGLBuffer to buffer data,
+//        // specify format, usage hint etc). These will be
+//        // remembered by the currently bound VAO
+//        m_positionBuffer.create();
+//        m_positionBuffer.setUsagePattern( QOpenGLBuffer::StreamDraw );
+//        m_positionBuffer.bind();
+//        m_positionBuffer.allocate( positionData,
+//                                   vertexCount * 3 * sizeof( float ) );
+//        m_shaderProgram.enableAttributeArray( &quot;vertexPosition&quot; );
+//        m_shaderProgram.setAttributeBuffer( &quot;vertexPosition&quot;, GL_FLOAT, 0, 3 );
+
+//    arrayBuf.bind();
+//    arrayBuf.QOpenGLVertexArrayObject(m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D));
+//    arrayBuf2.bind();
+//    arrayBuf2.allocate(m_shape2->getVecs(), m_shape2->numVertices() * sizeof(QVector3D));
     //arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
     //arrayBuf.allocate(verticess, 3 * sizeof(QVector3D));
 
