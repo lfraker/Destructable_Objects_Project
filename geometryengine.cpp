@@ -50,15 +50,10 @@
 
 
 #include "geometryengine.h"
+#include "vertexdata.h"
 
 #include <QVector2D>
 #include <QVector3D>
-
-struct VertexData
-{
-    QVector3D position;
-    QVector2D texCoord;
-};
 
 GeometryEngine::GeometryEngine()
     : indexBuf(QOpenGLBuffer::IndexBuffer)
@@ -165,10 +160,17 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     offset += sizeof(QVector3D);
 
     // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
-    int texcoordLocation = program->attributeLocation("a_texcoord");
-    program->enableAttributeArray(texcoordLocation);
-    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+    //int texcoordLocation = program->attributeLocation("a_texcoord");
+    //program->enableAttributeArray(texcoordLocation);
+    //program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    int color = program->attributeLocation("color");
+    program->setAttributeValue(color, 1.0f);
 
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+
+    // Draw lines
+    program->setAttributeValue(color, 0.0f);
+    glDrawArrays(GL_LINES, 0, 34);
 }

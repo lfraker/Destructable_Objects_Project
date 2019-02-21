@@ -4,7 +4,8 @@ TARGET = cube
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    voronoi.cpp
 
 SOURCES += \
     mainwidget.cpp \
@@ -13,7 +14,9 @@ SOURCES += \
 HEADERS += \
     mainwidget.h \
     geometryengine.h \
-    mainwindow.h
+    mainwindow.h \
+    voronoi.h \
+    vertexdata.h
 
 RESOURCES += \
     shaders.qrc \
