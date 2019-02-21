@@ -62,6 +62,9 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <QOpenGLVertexArrayObject>
+#include <shapes/Cube.h>
+#include <shapes/Cylinder.h>
 
 class GeometryEngine;
 
@@ -87,17 +90,32 @@ protected:
 
 private:
     QBasicTimer timer;
-    QOpenGLShaderProgram program;
+    QOpenGLShaderProgram m_program;
     GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
 
     QMatrix4x4 projection;
 
+    GLuint vertexLocation;
+    GLuint colorLocation;
+    GLuint matrixLocation;
+
+    QOpenGLVertexArrayObject m_vao; // Our Vertex Array Object
+    QOpenGLBuffer m_vvbo; // Our vertice Vertex Buffer Object
+    QOpenGLBuffer m_vcbo; // Our color Vertex Buffer Object
+
     QVector2D mousePressPosition;
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    Shape *m_shape;
+    Shape *m_shape2;
+
+    QOpenGLVertexArrayObject *m_vao1;
+    QOpenGLVertexArrayObject *m_vao2;
+    QOpenGLBuffer m_positionBuffer1;
+    QOpenGLBuffer m_positionBuffer2;
 };
 
 #endif // MAINWIDGET_H

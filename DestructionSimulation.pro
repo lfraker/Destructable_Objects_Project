@@ -5,7 +5,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    voronoi.cpp
+    voronoi.cpp \
+    shapes/shape.cpp \
+    shapes/Sphere.cpp \
+    shapes/Cube.cpp \
+    shapes/Cone.cpp \
+    shapes/Cylinder.cpp
 
 SOURCES += \
     mainwidget.cpp \
@@ -15,8 +20,13 @@ HEADERS += \
     mainwidget.h \
     geometryengine.h \
     mainwindow.h \
+    vertexdata.h \
     voronoi.h \
-    vertexdata.h
+    shapes/Shape.h \
+    shapes/Sphere.h \
+    shapes/Cube.h \
+    shapes/Cone.h \
+    shapes/Cylinder.h
 
 RESOURCES += \
     shaders.qrc \
