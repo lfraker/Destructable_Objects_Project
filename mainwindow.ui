@@ -33,6 +33,12 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="minimum">
+     <number>3</number>
+    </property>
+    <property name="value">
+     <number>10</number>
+    </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
@@ -54,28 +60,31 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="cubeSelect">
        <property name="text">
         <string>Cube</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_4">
+      <widget class="QRadioButton" name="sphereSelect">
        <property name="text">
         <string>Sphere</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_3">
+      <widget class="QRadioButton" name="cylinderSelect">
        <property name="text">
         <string>Cylinder</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="coneSelect">
        <property name="text">
         <string>Cone</string>
        </property>
@@ -110,6 +119,9 @@
     </property>
     <property name="minimum">
      <number>3</number>
+    </property>
+    <property name="value">
+     <number>10</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>

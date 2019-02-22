@@ -12,12 +12,10 @@ SOURCES += main.cpp \
     shapes/Cylinder.cpp
 
 SOURCES += \
-    mainwidget.cpp \
-    geometryengine.cpp
+    mainwidget.cpp
 
 HEADERS += \
     mainwidget.h \
-    geometryengine.h \
     mainwindow.h \
     shapes/Shape.h \
     shapes/Sphere.h \

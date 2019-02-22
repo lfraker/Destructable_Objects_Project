@@ -52,8 +52,9 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "geometryengine.h"
-
+#include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLBuffer>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
@@ -65,16 +66,20 @@
 #include <QOpenGLVertexArrayObject>
 #include <shapes/Cube.h>
 #include <shapes/Cylinder.h>
+#include <shapes/Cone.h>
+#include <shapes/Sphere.h>
 
-class GeometryEngine;
+//class GeometryEngine;
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 
 public:
+    enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
     void destructObj();
+    void changeShapeType(ShapeType newType);
     void sliderChanged(bool p1, int val);
     ~MainWidget();
 
@@ -89,11 +94,13 @@ protected:
 
     void initShaders();
     void initTextures();
+    void refreshShape();
+    void resetGl();
 
 private:
     QBasicTimer timer;
     QOpenGLShaderProgram m_program;
-    GeometryEngine *geometries;
+    //GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
 
@@ -115,6 +122,7 @@ private:
     QQuaternion rotation;
     Shape *m_shape;
     Shape *m_shape2;
+    ShapeType m_shapeType = CylinderType;
 
     QOpenGLVertexArrayObject *m_vao1;
     QOpenGLVertexArrayObject *m_vao2;

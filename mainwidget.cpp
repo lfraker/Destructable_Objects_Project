@@ -57,7 +57,7 @@
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
-    geometries(0),
+    //geometries(0),
     texture(0),
     angularSpeed(0),
     m_vao1(new QOpenGLVertexArrayObject),
@@ -71,7 +71,7 @@ MainWidget::~MainWidget()
     // and the buffers.
     makeCurrent();
     delete texture;
-    delete geometries;
+    //delete geometries;
     delete m_shape;
     delete m_shape2;
     doneCurrent();
@@ -87,8 +87,40 @@ void MainWidget::destructObj() {
     int i = 5;
 }
 
-void MainWidget::sliderChanged(bool param1, int val) {
+void MainWidget::changeShapeType(ShapeType newType) {
+    m_shapeType = newType;
+    refreshShape();
+}
+
+void MainWidget::refreshShape() {
     delete m_shape;
+    switch (m_shapeType) {
+        case SphereType:
+            m_shape = new Sphere(p1, p2, 1);
+            break;
+        case CylinderType:
+            m_shape = new Cylinder(p1, p2, 1);
+            break;
+        case ConeType:
+            m_shape = new Cone(p1, p2, 1);
+            break;
+        case CubeType:
+            m_shape = new Cube(p1, p2);
+            break;
+    }
+    resetGl();
+    update();
+}
+
+void MainWidget::resetGl() {
+    m_vao1->bind();
+    m_positionBuffer1.release();
+    m_positionBuffer1.bind();
+    m_positionBuffer1.allocate( m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
+}
+
+void MainWidget::sliderChanged(bool param1, int val) {
+    //delete m_shape;
     if (param1){
         p1 = val;
     }
@@ -98,17 +130,20 @@ void MainWidget::sliderChanged(bool param1, int val) {
 //    m_vao1->release();
 //    m_vao1->destroy();
 //    m_vao1->create();
-    m_vao1->bind();
-    m_shape = new Cylinder(p1, p2, 1);
-    m_positionBuffer1.release();
-//    m_positionBuffer1.destroy();
-//    m_positionBuffer1.create();
-//    m_positionBuffer1.setUsagePattern( QOpenGLBuffer::StreamDraw );
-    m_positionBuffer1.bind();
-    m_positionBuffer1.allocate( m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
-//    m_program.enableAttributeArray("a_position");
-//    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
-    update();
+    if (val < 5) {
+        int i = 7;
+    }
+//    m_vao1->bind();
+    refreshShape();
+//    m_positionBuffer1.release();
+////    m_positionBuffer1.destroy();
+////    m_positionBuffer1.create();
+////    m_positionBuffer1.setUsagePattern( QOpenGLBuffer::StreamDraw );
+//    m_positionBuffer1.bind();
+//    m_positionBuffer1.allocate( m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
+////    m_program.enableAttributeArray("a_position");
+////    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+//    update();
 }
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
@@ -162,7 +197,7 @@ void MainWidget::initializeGL()
     // Enable back face culling
     glEnable(GL_CULL_FACE);
 
-    geometries = new GeometryEngine();
+    //geometries = new GeometryEngine();
 //    m_vao.create();
 //    m_vvbo.create();
 //    m_vcbo.create();
@@ -190,15 +225,15 @@ void MainWidget::initializeGL()
     // tangents, ...
 
 
-    // Create VAO for second object to render
-    m_vao2->create();
-    m_vao2->bind();
-    m_positionBuffer2.create();
-    m_positionBuffer2.setUsagePattern( QOpenGLBuffer::StreamDraw );
-    m_positionBuffer2.bind();
-    m_positionBuffer2.allocate( m_shape2->getVecs(), m_shape2->numVertices() * sizeof(QVector3D) );
-    m_program.enableAttributeArray("a_position");
-    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+//    // Create VAO for second object to render
+//    m_vao2->create();
+//    m_vao2->bind();
+//    m_positionBuffer2.create();
+//    m_positionBuffer2.setUsagePattern( QOpenGLBuffer::StreamDraw );
+//    m_positionBuffer2.bind();
+//    m_positionBuffer2.allocate( m_shape2->getVecs(), m_shape2->numVertices() * sizeof(QVector3D) );
+//    m_program.enableAttributeArray("a_position");
+//    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
 
     // Setup VBOs and IBO for next object
 
@@ -325,22 +360,22 @@ void MainWidget::paintGL()
     m_program.setAttributeValue(color, 0.0f);
     glDrawArrays(GL_LINES, 0, m_shape->numVertices());
 
-    QMatrix4x4 matrix2;
-    matrix2.translate(-2.0, 0.0, -5.0);
-    matrix2.rotate(rotation);
+//    QMatrix4x4 matrix2;
+//    matrix2.translate(-2.0, 0.0, -5.0);
+//    matrix2.rotate(rotation);
 
-//    // Set modelview-projection matrix
-    m_program.setUniformValue("mvp_matrix", projection * matrix2);
+////    // Set modelview-projection matrix
+//    m_program.setUniformValue("mvp_matrix", projection * matrix2);
 
-    m_vao2->bind();
-    color = m_program.attributeLocation("color");
-    m_program.setAttributeValue(color, 1.0f);
-    glDrawArrays(GL_TRIANGLES, 0, m_shape2->numVertices());
+//    m_vao2->bind();
+//    color = m_program.attributeLocation("color");
+//    m_program.setAttributeValue(color, 1.0f);
+//    glDrawArrays(GL_TRIANGLES, 0, m_shape2->numVertices());
 
-    m_program.setAttributeValue(color, 0.0f);
-    glDrawArrays(GL_LINES, 0, m_shape2->numVertices());
+//    m_program.setAttributeValue(color, 0.0f);
+//    glDrawArrays(GL_LINES, 0, m_shape2->numVertices());
 
-    // Draw cube geometry
+//    // Draw cube geometry
     //geometries->drawCubeGeometry(&m_program, projection, rotation);
 
     //geometries->drawCubeGeoTwo(&program);

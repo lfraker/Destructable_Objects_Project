@@ -104,7 +104,10 @@ void Cylinder::computeTriangles()
     }
 
     for (int rCount = 0; rCount < m_param2; ++rCount) {
-        for (float y = m_radius; y >= -m_radius; y -= height) {
+        int num_steps = (int)round((m_radius - (-m_radius))/height);
+        //for (float y = m_radius; y > -m_radius; y -= height) {
+        for (int st = 0; st < num_steps; ++st) {
+            float y = m_radius - (st * height);
             float hDiff = (y - height);
             float sRrad = m_radius * sin(((PI * 2.0f) * rCount)/m_param2);
             float sRradP = m_radius * sin(((PI * 2.0f) * (rCount + 1))/m_param2);

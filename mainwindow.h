@@ -21,6 +21,10 @@ private slots:
     void on_destructButton_clicked();
     void on_tesselationTwoSlider_valueChanged(int val);
     void on_tesselationOneSlider_valueChanged(int val);
+    void on_cylinderSelect_clicked();
+    void on_cubeSelect_clicked();
+    void on_sphereSelect_clicked();
+    void on_coneSelect_clicked();
 
 private:
     Ui::MainWindow *ui;
