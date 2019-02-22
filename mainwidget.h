@@ -74,6 +74,8 @@ class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
 
 public:
     explicit MainWidget(QWidget *parent = 0);
+    void destructObj();
+    void sliderChanged(bool p1, int val);
     ~MainWidget();
 
 protected:
@@ -100,6 +102,8 @@ private:
     GLuint vertexLocation;
     GLuint colorLocation;
     GLuint matrixLocation;
+    int p1 = 10;
+    int p2 = 10;
 
     QOpenGLVertexArrayObject m_vao; // Our Vertex Array Object
     QOpenGLBuffer m_vvbo; // Our vertice Vertex Buffer Object

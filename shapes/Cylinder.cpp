@@ -18,7 +18,7 @@ Cylinder::~Cylinder()
 
 void Cylinder::computeTriangles()
 {
-    delete[] m_vertexData;
+    //delete[] m_vertexData;
     float height = 1.0f/m_param1;
 
     int tris = ((m_param1 * m_param2) * 2);

@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QSlider" name="horizontalSlider">
+   <widget class="QSlider" name="tesselationOneSlider">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -99,7 +99,7 @@
      <enum>Qt::AutoText</enum>
     </property>
    </widget>
-   <widget class="QSlider" name="horizontalSlider_2">
+   <widget class="QSlider" name="tesselationTwoSlider">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -147,7 +147,7 @@
      <string>Tesselation 2</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="destructButton">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -160,7 +160,7 @@
      <string>Destruct</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="resetButton">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -185,4 +185,7 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <slots>
+  <slot>on_destroy_clicked()</slot>
+ </slots>
 </ui>

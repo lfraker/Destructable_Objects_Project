@@ -72,6 +72,8 @@ MainWidget::~MainWidget()
     makeCurrent();
     delete texture;
     delete geometries;
+    delete m_shape;
+    delete m_shape2;
     doneCurrent();
 }
 
@@ -79,6 +81,34 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
     mousePressPosition = QVector2D(e->localPos());
+}
+
+void MainWidget::destructObj() {
+    int i = 5;
+}
+
+void MainWidget::sliderChanged(bool param1, int val) {
+    delete m_shape;
+    if (param1){
+        p1 = val;
+    }
+    else {
+        p2 = val;
+    }
+//    m_vao1->release();
+//    m_vao1->destroy();
+//    m_vao1->create();
+    m_vao1->bind();
+    m_shape = new Cylinder(p1, p2, 1);
+    m_positionBuffer1.release();
+//    m_positionBuffer1.destroy();
+//    m_positionBuffer1.create();
+//    m_positionBuffer1.setUsagePattern( QOpenGLBuffer::StreamDraw );
+    m_positionBuffer1.bind();
+    m_positionBuffer1.allocate( m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
+//    m_program.enableAttributeArray("a_position");
+//    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+    update();
 }
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
@@ -133,9 +163,9 @@ void MainWidget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     geometries = new GeometryEngine();
-    m_vao.create();
-    m_vvbo.create();
-    m_vcbo.create();
+//    m_vao.create();
+//    m_vvbo.create();
+//    m_vcbo.create();
 
     // Create VAO for first object to render
     m_vao1->create();
@@ -299,7 +329,7 @@ void MainWidget::paintGL()
     matrix2.translate(-2.0, 0.0, -5.0);
     matrix2.rotate(rotation);
 
-    // Set modelview-projection matrix
+//    // Set modelview-projection matrix
     m_program.setUniformValue("mvp_matrix", projection * matrix2);
 
     m_vao2->bind();
