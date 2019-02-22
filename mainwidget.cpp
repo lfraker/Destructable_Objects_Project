@@ -83,6 +83,13 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
     mousePressPosition = QVector2D(e->localPos());
 }
 
+//void MainWidget::keyPressEvent(QKeyEvent *e) {
+//    switch (e->key()) {
+//        default:
+//            return;
+//    }
+//}
+
 void MainWidget::destructObj() {
     int i = 5;
 }
@@ -90,6 +97,17 @@ void MainWidget::destructObj() {
 void MainWidget::changeShapeType(ShapeType newType) {
     m_shapeType = newType;
     refreshShape();
+}
+
+void MainWidget::zoom(int zoomVal) {
+    m_zoom.setX(m_zoom.x() + zoomVal);
+    m_zoom.setY(m_zoom.y() + zoomVal);
+    m_zoom.setZ(m_zoom.z() + zoomVal);
+    update();
+}
+void MainWidget::pan(int leftRight, int forwardBack) {
+    m_translate.setX(m_translate.x() + leftRight);
+    update();
 }
 
 void MainWidget::refreshShape() {
@@ -301,7 +319,10 @@ void MainWidget::paintGL()
     // Calculate model view transformation
     QMatrix4x4 matrix;
     matrix.translate(0.0, 0.0, -10.0);
+    matrix.translate(m_translate);
     matrix.rotate(rotation);
+    matrix.scale(m_zoom);
+
 
     // Set modelview-projection matrix
     m_program.setUniformValue("mvp_matrix", projection * matrix);

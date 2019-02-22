@@ -19,6 +19,21 @@ void MainWindow::on_destructButton_clicked() {
     ui->openGLWidget->destructObj();
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *e) {
+    if (e->key() == Qt::Key_E) {
+        ui->openGLWidget->zoom(1);
+    }
+    else if (e->key() == Qt::Key_Q) {
+        ui->openGLWidget->zoom(-1);
+    }
+    else if (e->key() == Qt::Key_D) {
+        ui->openGLWidget->pan(1,0);
+    }
+    else if (e->key() == Qt::Key_A) {
+        ui->openGLWidget->pan(-1,0);
+    }
+}
+
 
 void MainWindow::on_tesselationTwoSlider_valueChanged(int val) {
     ui->openGLWidget->sliderChanged(false, val);

@@ -81,11 +81,14 @@ public:
     void destructObj();
     void changeShapeType(ShapeType newType);
     void sliderChanged(bool p1, int val);
+    void zoom(int zoomVal);
+    void pan(int leftRight, int forwardBack);
     ~MainWidget();
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -120,6 +123,8 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    QVector3D m_zoom = QVector3D(1.0, 1.0, 1.0);
+    QVector3D m_translate = QVector3D(0.0, 0.0, 0.0);
     Shape *m_shape;
     Shape *m_shape2;
     ShapeType m_shapeType = CylinderType;

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "mainwidget.h"
+#include <QKeyEvent>
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +17,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void keyPressEvent(QKeyEvent*e) override;
 
 private slots:
     void on_destructButton_clicked();
@@ -25,6 +28,7 @@ private slots:
     void on_cubeSelect_clicked();
     void on_sphereSelect_clicked();
     void on_coneSelect_clicked();
+
 
 private:
     Ui::MainWindow *ui;
