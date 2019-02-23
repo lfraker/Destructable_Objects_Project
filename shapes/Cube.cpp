@@ -15,10 +15,12 @@ Cube::~Cube()
 void Cube::computeTriangles()
 {
     int tris = ((m_param1 * m_param1) * 2);
-    int triVerts = (((tris * 6) * 3) * 6);
+    //int triVerts = (((tris * 6) * 3) * 6);
+    int triVerts = ((tris * 6) * 6);
     int ctr = 0;
 
-    m_vertexData = new QVector3D[triVerts];
+    //m_triangles = new QVector3D[triVerts];
+    m_triangles = new Triangle[triVerts];
     double length = 1.0;
     double side = ((length * 2.0)/m_param1);
     int num_steps = (int)round((length - (-length))/side);
@@ -70,18 +72,26 @@ void Cube::computeTriangles()
                 QVector3D vert6 = QVector3D(sign * (x + side), (y - side), sign * length);
                 QVector3D norm6 = QVector3D(0.0, 0.0, sign * 1.0);
 
-                m_vertexData[ctr] = vert1;
+
+                Triangle one = Triangle(vert1, vert2, vert3);
+                Triangle two = Triangle(vert4, vert5, vert6);
+                m_triangles[ctr] = one;
                 ctr++;
-                m_vertexData[ctr] = vert2;
+                m_triangles[ctr] = two;
                 ctr++;
-                m_vertexData[ctr] = vert3;
-                ctr++;
-                m_vertexData[ctr] = vert4;
-                ctr++;
-                m_vertexData[ctr] = vert5;
-                ctr++;
-                m_vertexData[ctr] = vert6;
-                ctr++;
+
+//                m_triangles[ctr] = vert1;
+//                ctr++;
+//                m_triangles[ctr] = vert2;
+//                ctr++;
+//                m_triangles[ctr] = vert3;
+//                ctr++;
+//                m_triangles[ctr] = vert4;
+//                ctr++;
+//                m_triangles[ctr] = vert5;
+//                ctr++;
+//                m_triangles[ctr] = vert6;
+//                ctr++;
 
             }
         }
@@ -131,18 +141,26 @@ void Cube::computeTriangles()
                 QVector3D vert6 = QVector3D(sign * (x - side), sign * length, (z - side));
                 QVector3D norm6 = QVector3D(0.0, sign * 1.0, 0.0);
 
-                m_vertexData[ctr] = vert1;
+
+                Triangle one = Triangle(vert1, vert2, vert3);
+                Triangle two = Triangle(vert4, vert5, vert6);
+                m_triangles[ctr] = one;
                 ctr++;
-                m_vertexData[ctr] = vert2;
+                m_triangles[ctr] = two;
                 ctr++;
-                m_vertexData[ctr] = vert3;
-                ctr++;
-                m_vertexData[ctr] = vert4;
-                ctr++;
-                m_vertexData[ctr] = vert5;
-                ctr++;
-                m_vertexData[ctr] = vert6;
-                ctr++;
+
+//                m_triangles[ctr] = vert1;
+//                ctr++;
+//                m_triangles[ctr] = vert2;
+//                ctr++;
+//                m_triangles[ctr] = vert3;
+//                ctr++;
+//                m_triangles[ctr] = vert4;
+//                ctr++;
+//                m_triangles[ctr] = vert5;
+//                ctr++;
+//                m_triangles[ctr] = vert6;
+//                ctr++;
 
             }
         }
@@ -198,18 +216,26 @@ void Cube::computeTriangles()
                     QVector3D vert6 = QVector3D(sign * length, (y - side), sign * (z + side));
                     QVector3D norm6 = QVector3D(sign * 1.0, 0.0, 0.0);
 
-                    m_vertexData[ctr] = vert1;
+
+                    Triangle one = Triangle(vert1, vert3, vert2);
+                    Triangle two = Triangle(vert4, vert6, vert5);
+                    m_triangles[ctr] = one;
                     ctr++;
-                    m_vertexData[ctr] = vert3;
+                    m_triangles[ctr] = two;
                     ctr++;
-                    m_vertexData[ctr] = vert2;
-                    ctr++;
-                    m_vertexData[ctr] = vert4;
-                    ctr++;
-                    m_vertexData[ctr] = vert6;
-                    ctr++;
-                    m_vertexData[ctr] = vert5;
-                    ctr++;
+
+//                    m_triangles[ctr] = vert1;
+//                    ctr++;
+//                    m_triangles[ctr] = vert3;
+//                    ctr++;
+//                    m_triangles[ctr] = vert2;
+//                    ctr++;
+//                    m_triangles[ctr] = vert4;
+//                    ctr++;
+//                    m_triangles[ctr] = vert6;
+//                    ctr++;
+//                    m_triangles[ctr] = vert5;
+//                    ctr++;
 
 
 
@@ -217,6 +243,6 @@ void Cube::computeTriangles()
             }
         }
 
-     m_numVerts = ctr;
-
+     m_numTris = ctr;
+    genVecs();
 }

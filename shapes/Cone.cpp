@@ -17,10 +17,12 @@ Cone::~Cone()
 
 void Cone::computeTriangles()
 {
-    //delete[] m_vertexData;
+    //delete[] m_triangles;
     int tris = ((m_param1 * m_param2) * 2);
-    int triVerts = ((tris * 3) * 6) * 2;
-    m_vertexData = new QVector3D[triVerts];
+    //int triVerts = ((tris * 3) * 6) * 2;
+    int triVerts = (tris * 6) * 2;
+    //m_triangles = new QVector3D[triVerts];
+    m_triangles = new Triangle[triVerts];
     int ctr = 0;
 
 //
@@ -66,18 +68,25 @@ void Cone::computeTriangles()
             QVector3D vert6 = QVector3D((radiDecr - radiInc) * cos(rad), -height, (radiDecr - radiInc) * sin(rad));
             QVector3D norm6 = QVector3D(0.0f, -1.0f, 0.0f);
 
-            m_vertexData[ctr] = vert4;
+            Triangle one = Triangle(vert4, vert5, vert6);
+            Triangle two = Triangle(vert1, vert2, vert3);
+            m_triangles[ctr] = one;
             ctr++;
-            m_vertexData[ctr] = vert5;
+            m_triangles[ctr] = two;
             ctr++;
-            m_vertexData[ctr] = vert6;
-            ctr++;
-            m_vertexData[ctr] = vert1;
-            ctr++;
-            m_vertexData[ctr] = vert2;
-            ctr++;
-            m_vertexData[ctr] = vert3;
-            ctr++;
+
+//            m_triangles[ctr] = vert4;
+//            ctr++;
+//            m_triangles[ctr] = vert5;
+//            ctr++;
+//            m_triangles[ctr] = vert6;
+//            ctr++;
+//            m_triangles[ctr] = vert1;
+//            ctr++;
+//            m_triangles[ctr] = vert2;
+//            ctr++;
+//            m_triangles[ctr] = vert3;
+//            ctr++;
 
         }
     }
@@ -132,22 +141,29 @@ void Cone::computeTriangles()
                 norm6 = QVector3D(cos(radN) * xzNorm, yNorm, sin(radN) * xzNorm);
             }
 
-            m_vertexData[ctr] = vert4;
+            Triangle one = Triangle(vert4, vert6, vert5);
+            Triangle two = Triangle(vert1, vert3, vert2);
+            m_triangles[ctr] = one;
             ctr++;
-            m_vertexData[ctr] = vert6;
+            m_triangles[ctr] = two;
             ctr++;
-            m_vertexData[ctr] = vert5;
-            ctr++;
-            m_vertexData[ctr] = vert1;
-            ctr++;
-            m_vertexData[ctr] = vert3;
-            ctr++;
-            m_vertexData[ctr] = vert2;
-            ctr++;
+
+//            m_triangles[ctr] = vert4;
+//            ctr++;
+//            m_triangles[ctr] = vert6;
+//            ctr++;
+//            m_triangles[ctr] = vert5;
+//            ctr++;
+//            m_triangles[ctr] = vert1;
+//            ctr++;
+//            m_triangles[ctr] = vert3;
+//            ctr++;
+//            m_triangles[ctr] = vert2;
+//            ctr++;
 
         }
     }
 
-    m_numVerts = ctr;
-
+    m_numTris = ctr;
+    genVecs();
 }

@@ -76,6 +76,16 @@ class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
+
+    struct TransformDetails {
+        public:
+            QVector3D m_rotationAxis;
+            qreal m_angularSpeed;
+            QQuaternion m_rotation;
+            QVector3D m_zoom = QVector3D(1.0, 1.0, 1.0);
+            QVector3D m_translate = QVector3D(0.0, 0.0, 0.0);
+    };
+
     enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
     void destructObj();
@@ -95,6 +105,8 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+    void generateDestructionLists(bool destruct);
+
     void initShaders();
     void initTextures();
     void refreshShape();
@@ -112,8 +124,8 @@ private:
     GLuint vertexLocation;
     GLuint colorLocation;
     GLuint matrixLocation;
-    int p1 = 10;
-    int p2 = 10;
+    int p1 = 3;
+    int p2 = 3;
 
     QOpenGLVertexArrayObject m_vao; // Our Vertex Array Object
     QOpenGLBuffer m_vvbo; // Our vertice Vertex Buffer Object
@@ -126,13 +138,17 @@ private:
     QVector3D m_zoom = QVector3D(1.0, 1.0, 1.0);
     QVector3D m_translate = QVector3D(0.0, 0.0, 0.0);
     Shape *m_shape;
-    Shape *m_shape2;
+
     ShapeType m_shapeType = CylinderType;
 
     QOpenGLVertexArrayObject *m_vao1;
     QOpenGLVertexArrayObject *m_vao2;
     QOpenGLBuffer m_positionBuffer1;
     QOpenGLBuffer m_positionBuffer2;
+
+    Shape * m_shapes;
+    QOpenGLVertexArrayObject * m_vaos;
+    QOpenGLBuffer * m_positionBuffers;
 };
 
 #endif // MAINWIDGET_H

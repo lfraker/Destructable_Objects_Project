@@ -19,9 +19,11 @@ Sphere::~Sphere()
 void Sphere::computeTriangles()
 {
     int tris = ((m_param1 * m_param2) * 2);
-    int triVerts = ((tris * 3) * 6);
+    //int triVerts = ((tris * 3) * 6);
+    int triVerts = (tris * 6);
     int ctr = 0;
-    m_vertexData = new QVector3D[triVerts];
+    //m_triangles = new QVector3D[triVerts];
+    m_triangles = new Triangle[triVerts];
 
     for (int rCount = 0; rCount < m_param2; ++rCount) {
         for (int hCount = 0; hCount < m_param1; ++hCount) {
@@ -80,64 +82,72 @@ void Sphere::computeTriangles()
             float mag4 = sqrt((x4 * x4) + (y4 * y4) + (z4 * z4));
             //QVector3D norm6 = QVector3D(x4/mag4, y4/mag4, z4/mag4);
 
-//            m_vertexData[ctr] = vert1.x();
+//            m_triangles[ctr] = vert1.x();
 //            ctr++;
-//            m_vertexData[ctr] = vert1.y();
+//            m_triangles[ctr] = vert1.y();
 //            ctr++;
-//            m_vertexData[ctr] = vert1.z();
-//            ctr++;
-
-//            m_vertexData[ctr] = vert2.x();
-//            ctr++;
-//            m_vertexData[ctr] = vert2.y();
-//            ctr++;
-//            m_vertexData[ctr] = vert2.z();
+//            m_triangles[ctr] = vert1.z();
 //            ctr++;
 
-//            m_vertexData[ctr] = vert3.x();
+//            m_triangles[ctr] = vert2.x();
 //            ctr++;
-//            m_vertexData[ctr] = vert3.y();
+//            m_triangles[ctr] = vert2.y();
 //            ctr++;
-//            m_vertexData[ctr] = vert3.z();
-//            ctr++;
-
-//            m_vertexData[ctr] = vert4.x();
-//            ctr++;
-//            m_vertexData[ctr] = vert4.y();
-//            ctr++;
-//            m_vertexData[ctr] = vert4.z();
+//            m_triangles[ctr] = vert2.z();
 //            ctr++;
 
-//            m_vertexData[ctr] = vert5.x();
+//            m_triangles[ctr] = vert3.x();
 //            ctr++;
-//            m_vertexData[ctr] = vert5.y();
+//            m_triangles[ctr] = vert3.y();
 //            ctr++;
-//            m_vertexData[ctr] = vert5.z();
-//            ctr++;
-
-//            m_vertexData[ctr] = vert6.x();
-//            ctr++;
-//            m_vertexData[ctr] = vert6.y();
-//            ctr++;
-//            m_vertexData[ctr] = vert6.z();
+//            m_triangles[ctr] = vert3.z();
 //            ctr++;
 
-              m_vertexData[ctr] = vert1;
-              ctr++;
-              m_vertexData[ctr] = vert2;
-              ctr++;
-              m_vertexData[ctr] = vert3;
-              ctr++;
-              m_vertexData[ctr] = vert4;
-              ctr++;
-              m_vertexData[ctr] = vert5;
-              ctr++;
-              m_vertexData[ctr] = vert6;
-              ctr++;
+//            m_triangles[ctr] = vert4.x();
+//            ctr++;
+//            m_triangles[ctr] = vert4.y();
+//            ctr++;
+//            m_triangles[ctr] = vert4.z();
+//            ctr++;
+
+//            m_triangles[ctr] = vert5.x();
+//            ctr++;
+//            m_triangles[ctr] = vert5.y();
+//            ctr++;
+//            m_triangles[ctr] = vert5.z();
+//            ctr++;
+
+//            m_triangles[ctr] = vert6.x();
+//            ctr++;
+//            m_triangles[ctr] = vert6.y();
+//            ctr++;
+//            m_triangles[ctr] = vert6.z();
+//            ctr++;
+
+            Triangle one = Triangle(vert1, vert2, vert3);
+            Triangle two = Triangle(vert4, vert5, vert6);
+            m_triangles[ctr] = one;
+            ctr++;
+            m_triangles[ctr] = two;
+            ctr++;
+
+//              m_triangles[ctr] = vert1;
+//              ctr++;
+//              m_triangles[ctr] = vert2;
+//              ctr++;
+//              m_triangles[ctr] = vert3;
+//              ctr++;
+//              m_triangles[ctr] = vert4;
+//              ctr++;
+//              m_triangles[ctr] = vert5;
+//              ctr++;
+//              m_triangles[ctr] = vert6;
+//              ctr++;
         }
     }
 
-    m_numVerts = ctr;
+    m_numTris = ctr;
+    genVecs();
 }
 
 

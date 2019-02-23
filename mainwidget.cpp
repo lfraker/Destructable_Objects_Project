@@ -73,7 +73,6 @@ MainWidget::~MainWidget()
     delete texture;
     //delete geometries;
     delete m_shape;
-    delete m_shape2;
     doneCurrent();
 }
 
@@ -200,6 +199,11 @@ void MainWidget::timerEvent(QTimerEvent *)
     }
 }
 
+void MainWidget::generateDestructionLists(bool destruct) {
+    // Plaseholder code - add in voronoi collision code
+
+}
+
 void MainWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -230,9 +234,9 @@ void MainWidget::initializeGL()
     m_positionBuffer1.create();
     m_positionBuffer1.setUsagePattern( QOpenGLBuffer::StreamDraw );
     m_positionBuffer1.bind();
-    m_shape = new Cylinder(10, 10, 1);
-    m_shape2 = new Cube(10, 10);
-    m_positionBuffer1.allocate( m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
+    m_shape = new Cylinder(3, 3, 1);
+    //m_shape2 = new Cube(10, 10);
+    m_positionBuffer1.allocate(m_shape->getVecs(), m_shape->numVertices() * sizeof(QVector3D) );
     m_program.enableAttributeArray("a_position");
     m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
     //int vertexLocation = program->attributeLocation("a_position");

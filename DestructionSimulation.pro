@@ -5,11 +5,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    shapes/shape.cpp \
     shapes/Sphere.cpp \
     shapes/Cube.cpp \
     shapes/Cone.cpp \
-    shapes/Cylinder.cpp
+    shapes/Cylinder.cpp \
+    shapes/Shape.cpp
 
 SOURCES += \
     mainwidget.cpp

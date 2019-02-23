@@ -18,13 +18,19 @@ Cylinder::~Cylinder()
 
 void Cylinder::computeTriangles()
 {
-    //delete[] m_vertexData;
+    //delete[] m_triangles;
     float height = 1.0f/m_param1;
 
     int tris = ((m_param1 * m_param2) * 2);
-    int triVerts = ((tris * 3) * 6) * 3;
-    m_vertexData = new QVector3D[triVerts];
+    //int triVerts = ((tris * 3) * 6) * 3;
+    int triVerts = (tris * 6) * 3;
+
+    //m_triangles = new QVector3D[triVerts];
+    m_triangles = new Triangle[triVerts];
+    //m_vertices = new QVector3D[triVerts * 3];
+
     int ctr = 0;
+    int ctr2 = 0;
 
 
 //
@@ -71,32 +77,46 @@ void Cylinder::computeTriangles()
                 QVector3D norm6 = QVector3D(0.0f, (sign * 1.0f), 0.0f);
 
                 if (sign < 0.0f) {
-                    m_vertexData[ctr] = vert1;
+                    Triangle one = Triangle(vert1, vert2, vert3);
+                    Triangle two = Triangle(vert4, vert5, vert6);
+                    m_triangles[ctr] = one;
                     ctr++;
-                    m_vertexData[ctr] = vert2;
+                    m_triangles[ctr] = two;
                     ctr++;
-                    m_vertexData[ctr] = vert3;
-                    ctr++;
-                    m_vertexData[ctr] = vert4;
-                    ctr++;
-                    m_vertexData[ctr] = vert5;
-                    ctr++;
-                    m_vertexData[ctr] = vert6;
-                    ctr++;
+
+//                    m_vertices[ctr2] = vert1;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert2;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert3;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert4;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert5;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert6;
+//                    ctr2++;
                 }
                 else {
-                    m_vertexData[ctr] = vert1;
+                    Triangle one = Triangle(vert1, vert3, vert2);
+                    Triangle two = Triangle(vert4, vert6, vert5);
+                    m_triangles[ctr] = one;
                     ctr++;
-                    m_vertexData[ctr] = vert3;
+                    m_triangles[ctr] = two;
                     ctr++;
-                    m_vertexData[ctr] = vert2;
-                    ctr++;
-                    m_vertexData[ctr] = vert4;
-                    ctr++;
-                    m_vertexData[ctr] = vert6;
-                    ctr++;
-                    m_vertexData[ctr] = vert5;
-                    ctr++;
+
+//                    m_vertices[ctr2] = vert1;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert3;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert2;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert4;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert6;
+//                    ctr2++;
+//                    m_vertices[ctr2] = vert5;
+//                    ctr2++;
                 }
 
             }
@@ -147,27 +167,31 @@ void Cylinder::computeTriangles()
             QVector3D vert6 = QVector3D(cRradP, hDiff, sRradP);
             QVector3D norm6 = QVector3D(2.0f * cRradP, 0.0f, 2.0f * sRradP);
 
-            m_vertexData[ctr] = vert1;
+            Triangle one = Triangle(vert1, vert3, vert2);
+            Triangle two = Triangle(vert4, vert6, vert5);
+            m_triangles[ctr] = one;
             ctr++;
-            m_vertexData[ctr] = vert3;
+            m_triangles[ctr] = two;
             ctr++;
-            m_vertexData[ctr] = vert2;
-            ctr++;
-            m_vertexData[ctr] = vert4;
-            ctr++;
-            m_vertexData[ctr] = vert6;
-            ctr++;
-            m_vertexData[ctr] = vert5;
-            ctr++;
+
+//            m_vertices[ctr2] = vert1;
+//            ctr2++;
+//            m_vertices[ctr2] = vert3;
+//            ctr2++;
+//            m_vertices[ctr2] = vert2;
+//            ctr2++;
+//            m_vertices[ctr2] = vert4;
+//            ctr2++;
+//            m_vertices[ctr2] = vert6;
+//            ctr2++;
+//            m_vertices[ctr2] = vert5;
+//            ctr2++;
         }
 
-        m_numVerts = ctr;
-}
+    }
 
-
-
-
-
+    m_numTris = ctr;
+    genVecs();
 
 }
 
