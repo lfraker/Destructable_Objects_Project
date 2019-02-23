@@ -4,16 +4,24 @@ TARGET = cube
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    shapes/Sphere.cpp \
+    shapes/Cube.cpp \
+    shapes/Cone.cpp \
+    shapes/Cylinder.cpp \
+    shapes/Shape.cpp
 
 SOURCES += \
-    mainwidget.cpp \
-    geometryengine.cpp
+    mainwidget.cpp
 
 HEADERS += \
     mainwidget.h \
-    geometryengine.h \
-    mainwindow.h
+    mainwindow.h \
+    shapes/Shape.h \
+    shapes/Sphere.h \
+    shapes/Cube.h \
+    shapes/Cone.h \
+    shapes/Cylinder.h
 
 RESOURCES += \
     shaders.qrc \

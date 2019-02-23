@@ -52,8 +52,9 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "geometryengine.h"
-
+#include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLBuffer>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
@@ -62,42 +63,92 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <QOpenGLVertexArrayObject>
+#include <shapes/Cube.h>
+#include <shapes/Cylinder.h>
+#include <shapes/Cone.h>
+#include <shapes/Sphere.h>
 
-class GeometryEngine;
+//class GeometryEngine;
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 
 public:
+
+    struct TransformDetails {
+        public:
+            QVector3D m_rotationAxis;
+            qreal m_angularSpeed;
+            QQuaternion m_rotation;
+            QVector3D m_zoom = QVector3D(1.0, 1.0, 1.0);
+            QVector3D m_translate = QVector3D(0.0, 0.0, 0.0);
+    };
+
+    enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
+    void destructObj();
+    void changeShapeType(ShapeType newType);
+    void sliderChanged(bool p1, int val);
+    void zoom(int zoomVal);
+    void pan(int leftRight, int forwardBack);
     ~MainWidget();
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+    void generateDestructionLists(bool destruct);
+
     void initShaders();
     void initTextures();
+    void refreshShape();
+    void resetGl();
 
 private:
     QBasicTimer timer;
-    QOpenGLShaderProgram program;
-    GeometryEngine *geometries;
+    QOpenGLShaderProgram m_program;
+    //GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
 
     QMatrix4x4 projection;
 
+    GLuint vertexLocation;
+    GLuint colorLocation;
+    GLuint matrixLocation;
+    int p1 = 3;
+    int p2 = 3;
+
+    QOpenGLVertexArrayObject m_vao; // Our Vertex Array Object
+    QOpenGLBuffer m_vvbo; // Our vertice Vertex Buffer Object
+    QOpenGLBuffer m_vcbo; // Our color Vertex Buffer Object
+
     QVector2D mousePressPosition;
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    QVector3D m_zoom = QVector3D(1.0, 1.0, 1.0);
+    QVector3D m_translate = QVector3D(0.0, 0.0, 0.0);
+    Shape *m_shape;
+
+    ShapeType m_shapeType = CylinderType;
+
+    QOpenGLVertexArrayObject *m_vao1;
+    QOpenGLVertexArrayObject *m_vao2;
+    QOpenGLBuffer m_positionBuffer1;
+    QOpenGLBuffer m_positionBuffer2;
+
+    Shape * m_shapes;
+    QOpenGLVertexArrayObject * m_vaos;
+    QOpenGLBuffer * m_positionBuffers;
 };
 
 #endif // MAINWIDGET_H
