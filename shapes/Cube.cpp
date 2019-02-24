@@ -18,15 +18,11 @@ void Cube::computeTriangles()
     //int triVerts = (((tris * 6) * 3) * 6);
     int triVerts = ((tris * 6) * 6);
     int ctr = 0;
-
     //m_triangles = new QVector3D[triVerts];
     m_triangles = new Triangle[triVerts];
     double length = 1.0;
     double side = ((length * 2.0)/m_param1);
     int num_steps = (int)round((length - (-length))/side);
-
-
-
 
 
 //    Loops for +- faces on the z axis
@@ -40,8 +36,6 @@ void Cube::computeTriangles()
 
                 QVector3D vert1 = QVector3D(sign * (x + side), y, sign * length);
                 QVector3D norm1 = QVector3D(0.0, 0.0, sign * 1.0);
-
-
 
 
                 //Top left
@@ -103,15 +97,11 @@ void Cube::computeTriangles()
             for (int tx = 0; tx < num_steps; ++tx) {
                 double z = length - (tz * side);
                 double x = length - (tx * side);
-                //First Triangle
 
                 //Top Right
 
                 QVector3D vert1 = QVector3D(sign * (x - side), sign * length, z);
                 QVector3D norm1 = QVector3D(0.0, sign * 1.0, 0.0);
-
-
-
 
                 //Top left
 
@@ -167,26 +157,17 @@ void Cube::computeTriangles()
     }
 
 
-
     //    Loops for + faces on the x axis
         for (double sign = 1.0; sign > -2.0; sign -= 2.0) {
-           // for (double y = 0.5; y > -0.5; y -= side) {
-              //  for (double z = -0.5; z < 0.5; z += side) {
             for (int ty = 0; ty < num_steps; ++ty) {
                 for (int tz = 0; tz < num_steps; ++tz) {
                     double y = length - (ty * side);
                     double z = -length + (tz * side);
-                    //First Triangle
-                    //First Triangle
-
 
                     //Top Right
 
                     QVector3D vert1 = QVector3D(sign * length, y, sign * (z + side));
                     QVector3D norm1 = QVector3D(sign * 1.0, 0.0, 0.0);
-
-
-
 
                     //Top left
 
