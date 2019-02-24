@@ -61,7 +61,6 @@ void Sphere::computeTriangles()
             float mag3 = sqrt((x3 * x3) + (y3 * y3) + (z3 * z3));
             //QVector3D norm3 = QVector3D(x3/mag3, y3/mag3, z3/mag3);
 
-
             //Top Right
 
             QVector3D vert4 = QVector3D(m_radius * cos(rad) * sin(hrad), m_radius * cos(hrad), m_radius * sin(rad) * sin(hrad));
@@ -81,48 +80,6 @@ void Sphere::computeTriangles()
             float z4 = m_radius * sin(rad) * sin(hradP);
             float mag4 = sqrt((x4 * x4) + (y4 * y4) + (z4 * z4));
             //QVector3D norm6 = QVector3D(x4/mag4, y4/mag4, z4/mag4);
-
-//            m_triangles[ctr] = vert1.x();
-//            ctr++;
-//            m_triangles[ctr] = vert1.y();
-//            ctr++;
-//            m_triangles[ctr] = vert1.z();
-//            ctr++;
-
-//            m_triangles[ctr] = vert2.x();
-//            ctr++;
-//            m_triangles[ctr] = vert2.y();
-//            ctr++;
-//            m_triangles[ctr] = vert2.z();
-//            ctr++;
-
-//            m_triangles[ctr] = vert3.x();
-//            ctr++;
-//            m_triangles[ctr] = vert3.y();
-//            ctr++;
-//            m_triangles[ctr] = vert3.z();
-//            ctr++;
-
-//            m_triangles[ctr] = vert4.x();
-//            ctr++;
-//            m_triangles[ctr] = vert4.y();
-//            ctr++;
-//            m_triangles[ctr] = vert4.z();
-//            ctr++;
-
-//            m_triangles[ctr] = vert5.x();
-//            ctr++;
-//            m_triangles[ctr] = vert5.y();
-//            ctr++;
-//            m_triangles[ctr] = vert5.z();
-//            ctr++;
-
-//            m_triangles[ctr] = vert6.x();
-//            ctr++;
-//            m_triangles[ctr] = vert6.y();
-//            ctr++;
-//            m_triangles[ctr] = vert6.z();
-//            ctr++;
 
             Triangle one = Triangle(vert1, vert2, vert3);
             Triangle two = Triangle(vert4, vert5, vert6);

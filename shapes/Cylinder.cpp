@@ -18,13 +18,10 @@ Cylinder::~Cylinder()
 
 void Cylinder::computeTriangles()
 {
-    //delete[] m_triangles;
     float height = 1.0f/m_param1;
-
     int tris = ((m_param1 * m_param2) * 2);
     //int triVerts = ((tris * 3) * 6) * 3;
     int triVerts = (tris * 6) * 3;
-
     //m_triangles = new QVector3D[triVerts];
     m_triangles = new Triangle[triVerts];
     //m_vertices = new QVector3D[triVerts * 3];
@@ -32,8 +29,6 @@ void Cylinder::computeTriangles()
     int ctr = 0;
     int ctr2 = 0;
 
-
-//
     //Cap Top
     float radiInc = (m_radius/m_param1);
     for (float sign = -1; sign < 2.0f; sign += 2.0f) {
@@ -125,7 +120,6 @@ void Cylinder::computeTriangles()
 
     for (int rCount = 0; rCount < m_param2; ++rCount) {
         int num_steps = (int)round((m_radius - (-m_radius))/height);
-        //for (float y = m_radius; y > -m_radius; y -= height) {
         for (int st = 0; st < num_steps; ++st) {
             float y = m_radius - (st * height);
             float hDiff = (y - height);
