@@ -19,6 +19,10 @@ void MainWindow::on_destructButton_clicked() {
     ui->openGLWidget->destructObj();
 }
 
+void MainWindow::on_resetButton_clicked() {
+    ui->openGLWidget->reset();
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *e) {
     if (e->key() == Qt::Key_E) {
         ui->openGLWidget->zoom(1);
@@ -27,10 +31,10 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
         ui->openGLWidget->zoom(-1);
     }
     else if (e->key() == Qt::Key_D) {
-        ui->openGLWidget->pan(1,0);
+        ui->openGLWidget->pan(-1,0);
     }
     else if (e->key() == Qt::Key_A) {
-        ui->openGLWidget->pan(-1,0);
+        ui->openGLWidget->pan(1,0);
     }
 }
 

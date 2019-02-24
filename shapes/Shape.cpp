@@ -22,17 +22,6 @@ void Shape::genVecs() {
 }
 
 QVector3D* Shape::getVecs() {
-    //deleteVertexCache();
-//    if (m_vertices == NULL) {
-//        m_vertices = new QVector3D[numVertices()];
-//        int vertCtr = 0;
-
-//        for (int i = 0; i < numVertices(); i++) {
-//            Triangle tri = m_triangles[i];
-//            vertCtr = tri.addElements(m_vertices, vertCtr);
-//        }
-//    }
-
     return m_vertices;
 }
 

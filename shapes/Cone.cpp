@@ -17,7 +17,6 @@ Cone::~Cone()
 
 void Cone::computeTriangles()
 {
-    //delete[] m_triangles;
     int tris = ((m_param1 * m_param2) * 2);
     //int triVerts = ((tris * 3) * 6) * 2;
     int triVerts = (tris * 6) * 2;
@@ -25,7 +24,6 @@ void Cone::computeTriangles()
     m_triangles = new Triangle[triVerts];
     int ctr = 0;
 
-//
     //Cap Top
     float radiInc = (m_radius/m_param1);
     for (int rCount = 0; rCount < m_param2; ++rCount) {

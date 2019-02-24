@@ -22,6 +22,7 @@ protected:
 
 private slots:
     void on_destructButton_clicked();
+    void on_resetButton_clicked();
     void on_tesselationTwoSlider_valueChanged(int val);
     void on_tesselationOneSlider_valueChanged(int val);
     void on_cylinderSelect_clicked();
