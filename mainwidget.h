@@ -110,6 +110,8 @@ protected:
     void initTextures();
     void refreshShape();
     void resetGl();
+    void startShape();
+    void startGl();
 
 private:
     QBasicTimer timer;
@@ -138,7 +140,8 @@ private:
 
     ShapeType m_shapeType = CylinderType;
 
-    int m_numShapes = 1;
+    int m_numShapes = 0;
+    int m_maxShapes = 10;
     Shape ** m_shapes = NULL;
     QOpenGLVertexArrayObject ** m_vaos = NULL;
     QOpenGLBuffer ** m_positionBuffers = NULL;

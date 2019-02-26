@@ -120,12 +120,19 @@ void MainWidget::pan(int leftRight, int forwardBack) {
 void MainWidget::deleteShapeResources() {
     if (m_shapes != NULL) {
         for (int i = 0; i < m_numShapes; i++) {
-            m_vaos[i]->release();
-            m_positionBuffers[i]->release();
-            m_vaos[i]->destroy();
+//            m_vaos[i]->release();
+//            m_positionBuffers[i]->release();
+            m_vaos[i]->bind();
+            m_positionBuffers[i]->bind();
+            m_positionBuffers[i]->unmap();
             m_positionBuffers[i]->destroy();
-            delete m_vaos[i];
-            delete m_positionBuffers[i];
+            m_positionBuffers[i]->release();
+            m_vaos[i]->release();
+            //m_vaos[i]->destroy();
+            //m_vaos[i]->destroy();
+            //m_positionBuffers[i]->destroy();
+//            delete m_vaos[i];
+//            delete m_positionBuffers[i];
             delete m_shapes[i];
         }
 
@@ -134,17 +141,17 @@ void MainWidget::deleteShapeResources() {
 
     m_shapes = NULL;
 
-    if (m_vaos != NULL) {
-        delete [] m_vaos;
-    }
+//    if (m_vaos != NULL) {
+//        delete [] m_vaos;
+//    }
 
-    m_vaos = NULL;
+//    m_vaos = NULL;
 
-    if (m_positionBuffers != NULL) {
-        delete [] m_positionBuffers;
-    }
+//    if (m_positionBuffers != NULL) {
+//        delete [] m_positionBuffers;
+//    }
 
-    m_positionBuffers = NULL;
+//    m_positionBuffers = NULL;
 
     if (m_transforms != NULL) {
         delete [] m_transforms;
@@ -153,8 +160,8 @@ void MainWidget::deleteShapeResources() {
     m_transforms = NULL;
 }
 
-void MainWidget::refreshShape() {
-    deleteShapeResources();
+
+void MainWidget::startShape() {
 
     Shape * temp_shape;
     switch (m_shapeType) {
@@ -172,14 +179,15 @@ void MainWidget::refreshShape() {
             break;
     }
 
-    m_numShapes = 2;
-    m_shapes = new Shape* [m_numShapes] { temp_shape, new Cube(10,10) };
+    //m_numShapes = 2;
+    m_shapes[m_numShapes] = temp_shape;
+    m_numShapes++;
 
     resetGl();
     update();
 }
 
-void MainWidget::resetGl() {
+void MainWidget::startGl() {
     m_vaos = new QOpenGLVertexArrayObject * [m_numShapes];
     m_positionBuffers = new QOpenGLBuffer * [m_numShapes];
     m_transforms = new TransformDetails [m_numShapes];
@@ -210,6 +218,63 @@ void MainWidget::resetGl() {
         } else{
         m_transforms[i].m_shapeTranslate = QVector3D(0.0, 0.0, 0.0);
         }
+
+    }
+}
+
+
+
+void MainWidget::refreshShape() {
+    //deleteShapeResources();
+
+    Shape * temp_shape;
+    switch (m_shapeType) {
+        case SphereType:
+            temp_shape = new Sphere(p1, p2, 1);
+            break;
+        case CylinderType:
+            temp_shape = new Cylinder(p1, p2, 1);
+            break;
+        case ConeType:
+            temp_shape = new Cone(p1, p2, 1);
+            break;
+        case CubeType:
+            temp_shape = new Cube(p1, p2);
+            break;
+    }
+
+//    m_numShapes = 2;
+//    m_shapes = new Shape* [m_numShapes] { temp_shape, new Cube(10,10) };
+    m_shapes[m_numShapes] = temp_shape;
+    m_numShapes++;
+
+    resetGl();
+    update();
+}
+
+void MainWidget::resetGl() {
+//    m_vaos = new QOpenGLVertexArrayObject * [m_numShapes];
+//    m_positionBuffers = new QOpenGLBuffer * [m_numShapes];
+//    m_transforms = new TransformDetails [m_numShapes];
+
+    for (int i = 0; i < m_numShapes; i++) {
+        QOpenGLVertexArrayObject * vao = m_vaos[i];
+        QOpenGLBuffer * posBuff = m_positionBuffers[i];
+        m_program.bind();
+        vao->bind();
+        //posBuff->create();
+        posBuff->bind();
+        posBuff->allocate(m_shapes[i]->getVecs(), m_shapes[i]->numVertices() * sizeof(QVector3D) );
+        m_program.enableAttributeArray("a_position");
+        m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+        posBuff->release(QOpenGLBuffer::VertexBuffer);
+        vao->release();
+        m_program.release();
+        //m_vaos[i] = vao;
+        //m_positionBuffers[i] = posBuff;
+        //m_transforms[i] = TransformDetails();
+
+        m_transforms[i].m_shapeTranslate = QVector3D(i*1.5, 0.0, 0.0);
 
     }
 }
@@ -286,8 +351,21 @@ void MainWidget::initializeGL()
 
     // Enable back face culling
     glEnable(GL_CULL_FACE);
+    m_vaos = new QOpenGLVertexArrayObject * [m_maxShapes];
+    m_positionBuffers = new QOpenGLBuffer * [m_maxShapes];
+    m_transforms = new TransformDetails [m_maxShapes];
+    m_shapes = new Shape * [m_maxShapes];
 
-    refreshShape();
+    for (int i = 0; i < m_maxShapes; i++) {
+        m_vaos[i] = new QOpenGLVertexArrayObject();
+        m_vaos[i]->create();
+        m_positionBuffers[i] = new QOpenGLBuffer();
+        m_positionBuffers[i]->create();
+        m_positionBuffers[i]->setUsagePattern(QOpenGLBuffer::DynamicDraw);
+        m_transforms[i] = TransformDetails();
+    }
+
+    startShape();
 
     // Repeat for buffers of normals, texture coordinates,
     // tangents, ...
@@ -359,7 +437,7 @@ void MainWidget::paintGL()
 
     texture->bind();
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < m_numShapes; i++) {
 
         QMatrix4x4 matrix;
         matrix.translate(0.0, 0.0, -10.0);
