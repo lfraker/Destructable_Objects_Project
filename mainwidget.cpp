@@ -180,6 +180,7 @@ void MainWidget::refreshShape() {
 }
 
 void MainWidget::resetGl() {
+    this->makeCurrent();
     m_vaos = new QOpenGLVertexArrayObject * [m_numShapes];
     m_positionBuffers = new QOpenGLBuffer * [m_numShapes];
     m_transforms = new TransformDetails [m_numShapes];
@@ -267,7 +268,7 @@ void MainWidget::generateDestructionLists(bool destruct) {
 void MainWidget::initializeGL()
 {
     initializeOpenGLFunctions();
-
+    this->makeCurrent();
     glClearColor(0, 0, 0, 1);
 
     initShaders();
@@ -332,7 +333,7 @@ void MainWidget::resizeGL(int w, int h)
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
     const qreal zNear = 1.0, zFar = 30.0, fov = 45.0;
-
+    this->makeCurrent();
     // Reset projection
     projection.setToIdentity();
 
@@ -344,7 +345,7 @@ void MainWidget::paintGL()
 {
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    this->makeCurrent();
     texture->bind();
 
     for (int i = 0; i < m_numShapes; i++) {
