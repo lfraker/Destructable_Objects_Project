@@ -172,8 +172,8 @@ void MainWidget::refreshShape() {
             break;
     }
 
-    m_numShapes = 1;
-    m_shapes = new Shape* [m_numShapes] { temp_shape };
+    m_numShapes = 2;
+    m_shapes = new Shape* [m_numShapes] { temp_shape, new Cube(10,10) };
 
     resetGl();
     update();
@@ -187,21 +187,29 @@ void MainWidget::resetGl() {
     for (int i = 0; i < m_numShapes; i++) {
         QOpenGLVertexArrayObject * vao = new QOpenGLVertexArrayObject(this);
         QOpenGLBuffer * posBuff = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-        vao->create();
-        vao->bind();
-
         posBuff->create();
         posBuff->bind();
         posBuff->setUsagePattern(QOpenGLBuffer::DynamicDraw);
         posBuff->allocate(m_shapes[i]->getVecs(), m_shapes[i]->numVertices() * sizeof(QVector3D) );
+        posBuff->release();
+        vao->create();
+        m_program.bind();
+        vao->bind();
+        posBuff->bind();
         m_program.enableAttributeArray("a_position");
         m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
-        posBuff->release(QOpenGLBuffer::VertexBuffer);
         vao->release();
+        posBuff->release(QOpenGLBuffer::VertexBuffer);
+        m_program.release();
         m_vaos[i] = vao;
         m_positionBuffers[i] = posBuff;
         m_transforms[i] = TransformDetails();
+
+        if (i == 1) {
+            m_transforms[i].m_shapeTranslate = QVector3D(5.0, 2.0, 2.0);
+        } else{
         m_transforms[i].m_shapeTranslate = QVector3D(0.0, 0.0, 0.0);
+        }
 
     }
 }
@@ -307,6 +315,7 @@ void MainWidget::initShaders()
     // Bind shader pipeline for use
     if (!m_program.bind())
         close();
+
 }
 
 void MainWidget::initTextures()
@@ -344,28 +353,40 @@ void MainWidget::paintGL()
 {
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
 
     texture->bind();
 
-    for (int i = 0; i < m_numShapes; i++) {
+    for (int i = 0; i < 2; i++) {
 
-        // Calculate model view transformation
         QMatrix4x4 matrix;
         matrix.translate(0.0, 0.0, -10.0);
         matrix.translate(m_camTranslate);
+//        if (i >= 1) {
+//            matrix.translate(-2.0, 0.0, -5.0);
+//        }
+//        QVector3D trans = (&m_transforms)[i]->m_shapeTranslate;
         matrix.translate(m_transforms[i].m_shapeTranslate);
         matrix.rotate(m_camRotation);
         matrix.scale(m_camZoom);
+        m_program.bind();
+        m_vaos[i]->bind();
 
+        int loc = m_program.uniformLocation("mvp_matrix");
         // Set modelview-projection matrix
-        m_program.setUniformValue("mvp_matrix", projection * matrix);
+        m_program.setUniformValue(loc, projection * matrix);
 
+        //m_program.
+        //m_program.setUniformValue("mvp_matrix", projection * matrix);
+        //glUniformMatrix4fv()
         // Use texture unit 0 which contains cube.png
         m_program.setUniformValue("texture", 0);
 
         quintptr offset = 0;
 
-        m_vaos[i]->bind();
+        //m_vaos[i]->bind();
         m_positionBuffers[i]->bind();
         int color = m_program.attributeLocation("color");
         m_program.setAttributeValue(color, 1.0f);
@@ -373,8 +394,102 @@ void MainWidget::paintGL()
 
         m_program.setAttributeValue(color, 0.0f);
         glDrawArrays(GL_LINES, 0, m_shapes[i]->numVertices());
-        glFinish();
-        m_vaos[i]->release();
+        //glFinish();
+        //m_vaos[i]->release();
+
+        m_program.release();
     }
+
+
+
+//    QMatrix4x4 matrix;
+//    matrix.translate(0.0, 0.0, -10.0);
+//    matrix.translate(m_camTranslate);
+//    matrix.translate(m_transforms[0].m_shapeTranslate);
+//    matrix.rotate(m_camRotation);
+//    matrix.scale(m_camZoom);
+//    m_program.bind();
+//    m_vaos[0]->bind();
+
+//    int loc = m_program.uniformLocation("mvp_matrix");
+//    // Set modelview-projection matrix
+//    m_program.setUniformValue(loc, projection * matrix);
+
+//    //m_program.
+//    //m_program.setUniformValue("mvp_matrix", projection * matrix);
+//    //glUniformMatrix4fv()
+//    // Use texture unit 0 which contains cube.png
+//    m_program.setUniformValue("texture", 0);
+
+//    quintptr offset = 0;
+
+//    //m_vaos[i]->bind();
+//    m_positionBuffers[0]->bind();
+//    int color2 = m_program.attributeLocation("color");
+//    m_program.setAttributeValue(color2, 1.0f);
+//    glDrawArrays(GL_TRIANGLES, 0, m_shapes[0]->numVertices());
+
+//    m_program.setAttributeValue(color2, 0.0f);
+//    glDrawArrays(GL_LINES, 0, m_shapes[0]->numVertices());
+//    //glFinish();
+//    //m_vaos[i]->release();
+
+//    m_program.release();
+
+
+
+//    QMatrix4x4 matrix2;
+//    matrix2.translate(0.0, 0.0, -10.0);
+//    matrix2.translate(m_camTranslate);
+//    matrix2.translate(-2.0, 0.0, -5.0);
+//    matrix2.rotate(m_camRotation);
+//    matrix2.scale(m_camZoom);
+//    m_program.bind();
+//    m_vaos[1]->bind();
+
+//    int loc2 = m_program.uniformLocation("mvp_matrix");
+//    // Set modelview-projection matrix
+//    m_program.setUniformValue(loc2, projection * matrix2);
+
+//    //m_program.
+//    //m_program.setUniformValue("mvp_matrix", projection * matrix);
+//    //glUniformMatrix4fv()
+//    // Use texture unit 0 which contains cube.png
+//    m_program.setUniformValue("texture", 0);
+
+//    quintptr offset2 = 0;
+
+//    //m_vaos[i]->bind();
+//    m_positionBuffers[1]->bind();
+//    int color = m_program.attributeLocation("color");
+//    m_program.setAttributeValue(color, 1.0f);
+//    glDrawArrays(GL_TRIANGLES, 0, m_shapes[1]->numVertices());
+
+//    m_program.setAttributeValue(color, 0.0f);
+//    glDrawArrays(GL_LINES, 0, m_shapes[1]->numVertices());
+//    //glFinish();
+//    //m_vaos[i]->release();
+
+//    m_program.release();
+
+//        QOpenGLVertexArrayObject * m_vao2 = m_vaos[1];
+//        QMatrix4x4 matrix2;
+//        matrix2.translate(-2.0, 0.0, -5.0);
+//        matrix2.rotate(m_camRotation);
+//        m_program.bind();
+//        m_vao2->bind();
+
+//    //    // Set modelview-projection matrix
+//        m_program.setUniformValue("mvp_matrix", projection * matrix2);
+
+//        //m_positionBuffers[1]->bind();
+//        int color = m_program.attributeLocation("color");
+//        color = m_program.attributeLocation("color");
+//        m_program.setAttributeValue(color, 1.0f);
+//        glDrawArrays(GL_TRIANGLES, 0, m_shapes[1]->numVertices());
+
+//        m_program.setAttributeValue(color, 0.0f);
+//        glDrawArrays(GL_LINES, 0, m_shapes[1]->numVertices());
+
     glFlush();
 }
