@@ -180,10 +180,23 @@ void MainWidget::startShape() {
     }
 
     //m_numShapes = 2;
-    m_shapes[m_numShapes] = temp_shape;
-    m_numShapes++;
+    m_shapes[0] = temp_shape;
+    m_shapes[1] = new Cube(10, 10);
+    m_vaos[0]->bind();
+    m_positionBuffers[0]->release();
+    m_positionBuffers[0]->bind();
+    m_positionBuffers[0]->allocate( m_shapes[0]->getVecs(), m_shapes[0]->numVertices() * sizeof(QVector3D) );
+    m_program.enableAttributeArray("a_position");
+    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+//    m_vaos[1]->bind();
+//    m_positionBuffers[1]->release();
+//    m_positionBuffers[1]->bind();
+//    m_positionBuffers[1]->allocate( m_shapes[1]->getVecs(), 0 * sizeof(QVector3D) );
+//    m_program.enableAttributeArray("a_position");
+//    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+    m_numShapes = 1;
 
-    resetGl();
+    //resetGl();
     update();
 }
 
@@ -245,10 +258,19 @@ void MainWidget::refreshShape() {
 
 //    m_numShapes = 2;
 //    m_shapes = new Shape* [m_numShapes] { temp_shape, new Cube(10,10) };
-    m_shapes[m_numShapes] = temp_shape;
-    m_numShapes++;
+    m_shapes[1] = temp_shape;
+    //m_numShapes++;
+        this->makeCurrent();
+    m_vaos[1]->bind();
+    m_positionBuffers[1]->release();
+    m_positionBuffers[1]->bind();
+    m_positionBuffers[1]->allocate( m_shapes[1]->getVecs(), m_shapes[1]->numVertices() * sizeof(QVector3D) );
+    m_program.enableAttributeArray("a_position");
+    m_program.setAttributeBuffer( "a_position", GL_FLOAT, 0, 3, sizeof(QVector3D));
+    m_numShapes = 2;
+    m_transforms[1].m_shapeTranslate = QVector3D(2.0, 2.0, 2.0);
 
-    resetGl();
+    //resetGl();
     update();
 }
 
@@ -340,7 +362,7 @@ void MainWidget::generateDestructionLists(bool destruct) {
 void MainWidget::initializeGL()
 {
     initializeOpenGLFunctions();
-
+        this->makeCurrent();
     glClearColor(0, 0, 0, 1);
 
     initShaders();
@@ -434,7 +456,7 @@ void MainWidget::paintGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-
+    this->makeCurrent();
     texture->bind();
 
     for (int i = 0; i < m_numShapes; i++) {
