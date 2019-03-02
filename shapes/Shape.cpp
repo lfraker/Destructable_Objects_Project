@@ -1,11 +1,12 @@
 #include "shapes/Shape.h"
+#include "shapes/Triangle.h"
 
-Shape::Shape(int p1, int p2)
+Shape::Shape(int p1, int p2, int pts)
 {
     m_param1 = p1;
     m_param2 = p2;
+    m_internalPts = pts;
 }
-
 
 int Shape::numVertices() {
     return m_numTris * 3;
@@ -25,11 +26,9 @@ QVector3D* Shape::getVecs() {
     return m_vertices;
 }
 
-
-Shape::Triangle* Shape::getTris() {
+Triangle* Shape::getTris() {
     return m_triangles;
 }
-
 
 Shape::~Shape() {
     if (m_triangles != NULL) {

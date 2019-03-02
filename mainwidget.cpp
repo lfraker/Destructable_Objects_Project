@@ -281,6 +281,9 @@ void MainWidget::initializeGL()
     // Enable back face culling
     glEnable(GL_CULL_FACE);
 
+    // Enable point size adjustment
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
     refreshShape();
 
     // Repeat for buffers of normals, texture coordinates,
@@ -294,6 +297,9 @@ void MainWidget::initializeGL()
 
 void MainWidget::initShaders()
 {
+    // Init point size
+    //glPointSize(10);
+
     // Compile vertex shader
     if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
         close();
@@ -373,7 +379,9 @@ void MainWidget::paintGL()
         m_program.setAttributeValue(color, 1.0f);
         glDrawArrays(GL_TRIANGLES, 0, m_shapes[i]->numVertices());
 
-        Voronoi::generatePoints(m_shapes[i]->getTris(), 2);
+        //int points_count = 2;
+        //QVector3D * points = Voronoi::generatePoints(m_shapes[i]->getTris(), 2);
+        //glDrawArrays(GL_POINTS, 0, 2);
 
         m_program.setAttributeValue(color, 0.0f);
         glDrawArrays(GL_LINES, 0, m_shapes[i]->numVertices());

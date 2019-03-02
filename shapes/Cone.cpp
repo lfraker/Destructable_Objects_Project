@@ -1,10 +1,10 @@
 #include "Cone.h"
 
 #define PI 3.14159265
-
+#define INTERNAL_POINTS 5
 
 Cone::Cone(int p1, int p2, int radius)
-    : Shape(p1, p2)
+    : Shape(p1, p2, INTERNAL_POINTS)
 {
     m_radius = radius;
     computeTriangles();

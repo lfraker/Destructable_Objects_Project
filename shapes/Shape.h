@@ -14,7 +14,7 @@ class Shape
 {
 public:
     //Constructor for Shape. Pass in parameter1 and 2 determining the number of triangles that make up the shape
-    Shape(int p1, int p2);
+    Shape(int p1, int p2, int pts);
 
     //Destructor for Shape.
     virtual ~Shape();
@@ -38,6 +38,7 @@ protected:
 
     virtual void computeTriangles() = 0; // constructs shape's triangles
 
+    int m_internalPts;
     int m_param1;
     int m_param2;
     //int m_numbInds;

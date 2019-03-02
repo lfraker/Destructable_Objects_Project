@@ -3,9 +3,6 @@
 
 #include "shapes/Triangle.h"
 
-
-]
-
 class Voronoi
 {
 public:
