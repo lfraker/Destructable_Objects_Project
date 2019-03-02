@@ -46,7 +46,7 @@ protected:
     Triangle * m_triangles = NULL;
     float m_radius;
     QVector3D* m_vertices = NULL;
-
+    QVector3D m_direction;
 };
 
 #endif // SHAPE_H

@@ -3,20 +3,21 @@
 
 #include "shapes/Triangle.h"
 
+
+]
+
 class Voronoi
 {
 public:
-    Voronoi();
-
-    Triangle * split(Triangle[]);
-    Triangle * split(Triangle[], int);
-    Triangle * split(Triangle[], QVector3D[]);
-    QVector3D * generatePoints(Triangle[], int);
+    static Triangle * split(Triangle[]);
+    static Triangle * split(Triangle[], int);
+    static Triangle * split(Triangle[], QVector3D[]);
+    static QVector3D * generatePoints(Triangle[], int);
 
 private:
-    void triangulate(Triangle[], Triangle&);
-    bool match(QVector3D, QVector3D);
-    bool fequal(float, float);
+    static void triangulate(Triangle[], Triangle&);
+    static bool match(QVector3D, QVector3D);
+    static bool fequal(float, float);
 };
 
 #endif // VORONOI_H

@@ -50,6 +50,7 @@
 
 
 #include "mainwidget.h"
+#include "voronoi.h"
 
 #include <QMouseEvent>
 
@@ -370,6 +371,8 @@ void MainWidget::paintGL()
         int color = m_program.attributeLocation("color");
         m_program.setAttributeValue(color, 1.0f);
         glDrawArrays(GL_TRIANGLES, 0, m_shapes[i]->numVertices());
+
+        Voronoi::generatePoints(m_shapes[i]->getTris(), 2);
 
         m_program.setAttributeValue(color, 0.0f);
         glDrawArrays(GL_LINES, 0, m_shapes[i]->numVertices());

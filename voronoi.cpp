@@ -54,13 +54,13 @@ void triangulate(Triangle tri[], Triangle & triangulation){
     int randPts[3];
     // pick random point
     QVector3D tLeft = tri[rand() % triLength].m_left;
-    QVector3D tRight = tri[rand() % triLength].m_right;
+    QVector3D tRight = tri[rand() % triLength].m_left;
     while(match(tLeft, tRight)){
-        tRight = tri[rand() % triLength].m_right;
+        tRight = tri[rand() % triLength].m_left;
     }
-    QVector3D tTop = tri[rand() % triLength].m_top;
+    QVector3D tTop = tri[rand() % triLength].m_left;
     while(match(tLeft, tTop) || match(tRight, tTop)){
-        tTop = tri[rand() % triLength].m_right;
+        tTop = tri[rand() % triLength].m_left;
     }
     triangulation = Triangle(tLeft, tRight, tTop);
 }
