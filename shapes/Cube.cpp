@@ -1,12 +1,9 @@
 #include "Cube.h"
 
-#define INTERNAL_POINTS 5
-
 Cube::Cube(int p1, int p2)
-    : Shape(p1, p2, INTERNAL_POINTS)
+    : Shape(p1, p2)
 {
     computeTriangles();
-
 }
 
 Cube::~Cube()

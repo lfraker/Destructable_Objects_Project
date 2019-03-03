@@ -14,17 +14,20 @@ class Shape
 {
 public:
     //Constructor for Shape. Pass in parameter1 and 2 determining the number of triangles that make up the shape
-    Shape(int p1, int p2, int pts);
+    Shape(int p1, int p2);
+    Shape(Triangle[]);
 
     //Destructor for Shape.
-    virtual ~Shape();
+    ~Shape();
 
     void genVecs();
     QVector3D* getVecs(); // Return shape's vertex data
+    QVector3D getCenter();
     Triangle* getTris();
 
     //void setParams(); // Set settings parameters and call Compute Triangle
-
+    void setDirection(QVector3D);
+    void setTriangles(Triangle[]);
     //void addVertNorm(glm::vec3 vert, glm::vec3 norm); // Adds a vertex and a normal to the array
 
     int numVertices(); // returns the number of vertices in the array.
@@ -36,9 +39,8 @@ public:
 
 protected:
 
-    virtual void computeTriangles() = 0; // constructs shape's triangles
+    void computeTriangles(); // constructs shape's triangles
 
-    int m_internalPts;
     int m_param1;
     int m_param2;
     //int m_numbInds;

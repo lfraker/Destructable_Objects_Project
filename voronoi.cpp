@@ -3,19 +3,29 @@
 #include <math.h>
 #include <stdlib.h>
 
-Triangle * Voronoi::split(Triangle tri[])
+Shape* Voronoi::split(Shape shape)
 {
-    return split(tri, 2);
+    return split(shape, 2);
 }
 
-Triangle * Voronoi::split(Triangle tri[], const int pts)
+Shape* Voronoi::split(Shape shape, const int depth)
 {
-    return split(tri, generatePoints(tri, pts));
+    int pts = pow(2, depth);
+    static Shape* shapes;
+    shapes = (Shape*) calloc(pts, sizeof(Shape));
+    split(shape, shapes, 0, pts);
+    return shapes;
 }
 
-Triangle * Voronoi::split(Triangle tri[], QVector3D pts[])
+void Voronoi::split(Shape shape, Shape* shapes, int shapePtr, int pts)
 {
-    return tri;
+    if(pts <= 2){
+        // Split the shape into two
+        QVector3D * points = new QVector3D[2];
+        generatePoints(shape.getTris(), points);
+
+        return;
+    }
 }
 
 bool Voronoi::fequal(float a, float b)
@@ -23,42 +33,36 @@ bool Voronoi::fequal(float a, float b)
     return (fabs(a-b) < FLT_EPSILON);
 }
 
-bool Voronoi::match(QVector3D v1, QVector3D v2){
-    // return if two of the three coordinates match
-    return ((fequal(v1.x(), v2.x()) && fequal(v1.y(), v2.y())) ||
-            (fequal(v1.x(), v2.x()) && fequal(v1.z(), v2.z())) ||
-            (fequal(v1.y(), v2.y()) && fequal(v1.z(), v2.z())));
+bool Voronoi::match(Triangle t1, QVector3D v2){
+    // return if any of the three coordinates match
+    return t1.m_left == v2 || t1.m_top == v2 || t1.m_right == v2;
 }
 
 void Voronoi::triangulate(Triangle tri[], Triangle & triangulation){
     // Generate a random triangle within the shape
     int triLength = sizeof(tri)/sizeof(*tri);
-    int randPts[3];
     // pick random point
-    QVector3D tLeft = tri[rand() % triLength].m_left;
-    QVector3D tRight = tri[rand() % triLength].m_left;
-    while(match(tLeft, tRight)){
-        tRight = tri[rand() % triLength].m_left;
+    Triangle firstTriangle = tri[rand() % triLength];
+    int secondIdx = rand() % triLength;
+    while(match(firstTriangle, tri[secondIdx].m_left)){
+        secondIdx = (secondIdx + 1) % triLength;
     }
-    QVector3D tTop = tri[rand() % triLength].m_left;
-    while(match(tLeft, tTop) || match(tRight, tTop)){
-        tTop = tri[rand() % triLength].m_left;
+    int thirdIdx = rand() % triLength;
+    while(match(firstTriangle, tri[thirdIdx].m_left) || match(tri[secondIdx], tri[thirdIdx].m_left)){
+        thirdIdx = (thirdIdx + 1) % triLength;
     }
-    triangulation = Triangle(tLeft, tRight, tTop);
+    triangulation = Triangle(firstTriangle.m_left, tri[secondIdx].m_left, tri[thirdIdx].m_left);
 }
 
-QVector3D * Voronoi::generatePoints(Triangle tri[], const int pts){
+void Voronoi::generatePoints(Triangle tri[], QVector3D pts[]){
     // Distribute points internal to the convex shape
-    static QVector3D* rPts;
-    rPts = (QVector3D*) calloc(pts, sizeof(QVector3D));
-    for(int i = 0; i < pts; i++){
+    for(int i = 0; i < sizeof(pts) / sizeof(*pts); i++){
         // Triangulate the polygon
         Triangle triangulation;
         triangulate(tri, triangulation);
         // Pick random point on the triangle, weighted by area
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float s = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        rPts[i] = ((1 - sqrt(s))*triangulation.m_top) + sqrt(s)*((1-r)*triangulation.m_left + r*triangulation.m_right);
+        pts[i] = ((1 - sqrt(s))*triangulation.m_top) + sqrt(s)*((1-r)*triangulation.m_left + r*triangulation.m_right);
     }
-    return rPts;
 }
