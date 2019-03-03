@@ -32,39 +32,28 @@ void Cube::computeTriangles()
                 double x = -length + (tx * side);
 
                 //Top Right
-
                 QVector3D vert1 = QVector3D(sign * (x + side), y, sign * length);
                 QVector3D norm1 = QVector3D(0.0, 0.0, sign * 1.0);
 
-
                 //Top left
-
                 QVector3D vert2 = QVector3D(sign * x, y, sign * length);
                 QVector3D norm2 = QVector3D(0.0, 0.0, sign * 1.0);
 
                 //Bottom left
-
                 QVector3D vert3 = QVector3D(sign * x, (y - side), sign * length);
                 QVector3D norm3 = QVector3D(0.0, 0.0, sign * 1.0);
 
-
-
                 //Top Right
-
                 QVector3D vert4 = QVector3D( sign * (x + side), y, sign * length);
                 QVector3D norm4 = QVector3D(0.0, 0.0, sign * 1.0);
 
-
                 //bottom left
-
                 QVector3D vert5 = QVector3D(sign * x, (y - side), sign * length);
                 QVector3D norm5 = QVector3D(0.0, 0.0, sign * 1.0);
 
                 //Bottom right
-
                 QVector3D vert6 = QVector3D(sign * (x + side), (y - side), sign * length);
                 QVector3D norm6 = QVector3D(0.0, 0.0, sign * 1.0);
-
 
                 Triangle one = Triangle(vert1, vert2, vert3);
                 Triangle two = Triangle(vert4, vert5, vert6);
@@ -73,19 +62,18 @@ void Cube::computeTriangles()
                 m_triangles[ctr] = two;
                 ctr++;
 
-//                m_triangles[ctr] = vert1;
-//                ctr++;
-//                m_triangles[ctr] = vert2;
-//                ctr++;
-//                m_triangles[ctr] = vert3;
-//                ctr++;
-//                m_triangles[ctr] = vert4;
-//                ctr++;
-//                m_triangles[ctr] = vert5;
-//                ctr++;
-//                m_triangles[ctr] = vert6;
-//                ctr++;
-
+//            m_triangles[ctr] = vert1;
+//            ctr++;
+//            m_triangles[ctr] = vert2;
+//            ctr++;
+//            m_triangles[ctr] = vert3;
+//            ctr++;
+//            m_triangles[ctr] = vert4;
+//            ctr++;
+//            m_triangles[ctr] = vert5;
+//            ctr++;
+//            m_triangles[ctr] = vert6;
+//            ctr++;
             }
         }
     }
@@ -98,38 +86,28 @@ void Cube::computeTriangles()
                 double x = length - (tx * side);
 
                 //Top Right
-
                 QVector3D vert1 = QVector3D(sign * (x - side), sign * length, z);
                 QVector3D norm1 = QVector3D(0.0, sign * 1.0, 0.0);
 
                 //Top left
-
                 QVector3D vert2 = QVector3D(sign * x, sign * length, z);
                 QVector3D norm2 = QVector3D(0.0, sign * 1.0, 0.0);
 
                 //Bottom left
-
                 QVector3D vert3 = QVector3D(sign * x, sign * length,(z - side));
                 QVector3D norm3 = QVector3D(0.0, sign * 1.0, 0.0);
 
-
-
                 //Top Right
-
                 QVector3D vert4 = QVector3D( sign * (x - side), sign * length, z);
                 QVector3D norm4 = QVector3D(0.0, sign * 1.0, 0.0);
 
-
                 //bottom left
-
                 QVector3D vert5 = QVector3D(sign * x, sign * length, (z - side));
                 QVector3D norm5 = QVector3D(0.0, sign * 1.0, 0.0);
 
                 //Bottom right
-
                 QVector3D vert6 = QVector3D(sign * (x - side), sign * length, (z - side));
                 QVector3D norm6 = QVector3D(0.0, sign * 1.0, 0.0);
-
 
                 Triangle one = Triangle(vert1, vert2, vert3);
                 Triangle two = Triangle(vert4, vert5, vert6);
@@ -138,19 +116,18 @@ void Cube::computeTriangles()
                 m_triangles[ctr] = two;
                 ctr++;
 
-//                m_triangles[ctr] = vert1;
-//                ctr++;
-//                m_triangles[ctr] = vert2;
-//                ctr++;
-//                m_triangles[ctr] = vert3;
-//                ctr++;
-//                m_triangles[ctr] = vert4;
-//                ctr++;
-//                m_triangles[ctr] = vert5;
-//                ctr++;
-//                m_triangles[ctr] = vert6;
-//                ctr++;
-
+//              m_triangles[ctr] = vert1;
+//              ctr++;
+//              m_triangles[ctr] = vert2;
+//              ctr++;
+//              m_triangles[ctr] = vert3;
+//              ctr++;
+//              m_triangles[ctr] = vert4;
+//              ctr++;
+//              m_triangles[ctr] = vert5;
+//              ctr++;
+//              m_triangles[ctr] = vert6;
+//              ctr++;
             }
         }
     }
@@ -164,38 +141,31 @@ void Cube::computeTriangles()
                     double z = -length + (tz * side);
 
                     //Top Right
-
                     QVector3D vert1 = QVector3D(sign * length, y, sign * (z + side));
                     QVector3D norm1 = QVector3D(sign * 1.0, 0.0, 0.0);
 
                     //Top left
-
                     QVector3D vert2 = QVector3D(sign * length, y, sign * z);
                     QVector3D norm2 = QVector3D(sign * 1.0, 0.0, 0.0);
 
                     //Bottom left
-
                     QVector3D vert3 = QVector3D(sign * length, (y - side), sign * z);
                     QVector3D norm3 = QVector3D(sign * 1.0, 0.0, 0.0);
 
 
 
                     //Top Right
-
                     QVector3D vert4 = QVector3D(sign * length, y, sign * (z + side));
                     QVector3D norm4 = QVector3D(sign * 1.0, 0.0, 0.0);
 
 
                     //bottom left
-
                     QVector3D vert5 = QVector3D(sign * length, (y - side), sign * z);
                     QVector3D norm5 = QVector3D(sign * 1.0, 0.0, 0.0);
 
                     //Bottom right
-
                     QVector3D vert6 = QVector3D(sign * length, (y - side), sign * (z + side));
                     QVector3D norm6 = QVector3D(sign * 1.0, 0.0, 0.0);
-
 
                     Triangle one = Triangle(vert1, vert3, vert2);
                     Triangle two = Triangle(vert4, vert6, vert5);
@@ -204,25 +174,22 @@ void Cube::computeTriangles()
                     m_triangles[ctr] = two;
                     ctr++;
 
-//                    m_triangles[ctr] = vert1;
-//                    ctr++;
-//                    m_triangles[ctr] = vert3;
-//                    ctr++;
-//                    m_triangles[ctr] = vert2;
-//                    ctr++;
-//                    m_triangles[ctr] = vert4;
-//                    ctr++;
-//                    m_triangles[ctr] = vert6;
-//                    ctr++;
-//                    m_triangles[ctr] = vert5;
-//                    ctr++;
-
-
-
+//                  m_triangles[ctr] = vert1;
+//                  ctr++;
+//                  m_triangles[ctr] = vert3;
+//                  ctr++;
+//                  m_triangles[ctr] = vert2;
+//                  ctr++;
+//                  m_triangles[ctr] = vert4;
+//                  ctr++;
+//                  m_triangles[ctr] = vert6;
+//                  ctr++;
+//                  m_triangles[ctr] = vert5;
+//                  ctr++;
                 }
             }
         }
 
-     m_numTris = ctr;
+    m_numTris = ctr;
     genVecs();
 }

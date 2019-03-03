@@ -18,7 +18,7 @@ int Shape::numVertices() {
 }
 
 void Shape::genVecs() {
-    m_vertices = new QVector3D[numVertices()];
+    m_vertices = new QVector3D[this->numVertices()];
     int vertCtr = 0;
 
     for (int i = 0; i < m_numTris; i++) {
@@ -66,13 +66,11 @@ void Shape::setTriangles(Triangle t[])
 Shape::~Shape() {
     if (m_triangles != NULL) {
         delete [] m_triangles;
+        m_triangles = NULL;
     }
-
-    m_triangles = NULL;
 
     if (m_vertices != NULL) {
         delete [] m_vertices;
+        m_vertices = NULL;
     }
-
-    m_vertices = NULL;
 }

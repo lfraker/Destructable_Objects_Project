@@ -13,19 +13,32 @@ Shape* Voronoi::split(Shape shape, const int depth)
     int pts = pow(2, depth);
     static Shape* shapes;
     shapes = (Shape*) calloc(pts, sizeof(Shape));
-    split(shape, shapes, 0, pts);
+    split(shape, shapes, 0, depth);
     return shapes;
 }
 
-void Voronoi::split(Shape shape, Shape* shapes, int shapePtr, int pts)
+void Voronoi::split(Shape shape, Shape* shapes, int shapePtr, int depth)
 {
-    if(pts <= 2){
-        // Split the shape into two
-        QVector3D * points = new QVector3D[2];
-        generatePoints(shape.getTris(), points);
+    // Split the shape into two
+    QVector3D * points = new QVector3D[2];
+    generatePoints(shape.getTris(), points);
+    // Generate plane separating the two points
+    QVector3D midpoint = QVector3D((points[0].x() + points[1].x())/2, (points[0].y() + points[1].y())/2, (points[0].z() + points[1].z())/2);
+    QVector3D cross = QVector3D::crossProduct(points[0], points[1]);
+    QVector3D origin = QVector3D(0, 0, 0);
+    // Find where plane intersects with shape
+
+    // Add all vertices on either side to separate shapes
+
+    if(depth == 1){
+        // put the shapes in the array and return
 
         return;
+    }else{
+        // recursively keep splitting!
+
     }
+
 }
 
 bool Voronoi::fequal(float a, float b)
@@ -35,7 +48,7 @@ bool Voronoi::fequal(float a, float b)
 
 bool Voronoi::match(Triangle t1, QVector3D v2){
     // return if any of the three coordinates match
-    return t1.m_left == v2 || t1.m_top == v2 || t1.m_right == v2;
+    return qFuzzyCompare(t1.m_left, v2) || qFuzzyCompare(t1.m_top, v2) || qFuzzyCompare(t1.m_right, v2);
 }
 
 void Voronoi::triangulate(Triangle tri[], Triangle & triangulation){

@@ -46,8 +46,8 @@ protected:
     //int m_numbInds;
     int m_numVerts;
     int m_numTris;
-    Triangle * m_triangles = NULL;
     float m_radius;
+    Triangle* m_triangles = NULL;
     QVector3D* m_vertices = NULL;
     QVector3D m_direction;
 };
