@@ -8,7 +8,7 @@ Shape::Shape(int p1, int p2)
     m_param2 = p2;
 }
 
-Shape::Shape(Triangle t[])
+Shape::Shape(Triangle* t)
 {
     this->setTriangles(t);
 }
@@ -57,7 +57,7 @@ void Shape::setDirection(QVector3D v) {
     m_direction = v;
 }
 
-void Shape::setTriangles(Triangle t[])
+void Shape::setTriangles(Triangle* t)
 {
     m_numTris = sizeof(t) / sizeof (*t);
     m_triangles = t;

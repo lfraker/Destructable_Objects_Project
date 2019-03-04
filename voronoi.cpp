@@ -2,6 +2,9 @@
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
+#include <QList>
+#include <QSharedPointer>
+#include <array>
 
 Shape* Voronoi::split(Shape shape)
 {
@@ -10,33 +13,63 @@ Shape* Voronoi::split(Shape shape)
 
 Shape* Voronoi::split(Shape shape, const int depth)
 {
-    int pts = pow(2, depth);
+    int pts = static_cast<int>(pow(2, depth));
     static Shape* shapes;
-    shapes = (Shape*) calloc(pts, sizeof(Shape));
-    split(shape, shapes, 0, depth);
+    shapes = static_cast<Shape*>(calloc(pts, sizeof(Shape)));
+    split(shape, shapes, shape.getCenter(), pts);
     return shapes;
 }
 
-void Voronoi::split(Shape shape, Shape* shapes, int shapePtr, int depth)
+void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
 {
+    Triangle * tris = shape.getTris();
+
     // Split the shape into two
     QVector3D * points = new QVector3D[2];
-    generatePoints(shape.getTris(), points);
+    generatePoints(tris, points);
+
     // Generate plane separating the two points
+    // TODO: this breaks if both points and the origin are colinear
     QVector3D midpoint = QVector3D((points[0].x() + points[1].x())/2, (points[0].y() + points[1].y())/2, (points[0].z() + points[1].z())/2);
     QVector3D cross = QVector3D::crossProduct(points[0], points[1]);
-    QVector3D origin = QVector3D(0, 0, 0);
-    // Find where plane intersects with shape
+    QVector3D cross2 = QVector3D::crossProduct(points[1], points[0]);
+    Triangle bisectingPlane = Triangle(midpoint, cross, cross2);
 
     // Add all vertices on either side to separate shapes
+    QVarLengthArray<QSharedPointer<Triangle>> tL;
+    QVarLengthArray<QSharedPointer<Triangle>> tR;
 
-    if(depth == 1){
-        // put the shapes in the array and return
+    for(int i = 0; i < sizeof(tris)/sizeof(*tris); i++){
+        float lDist = tris[i].m_left.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
+        float rDist = tris[i].m_right.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
+        float tDist = tris[i].m_top.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
+        if(lDist < 0 && rDist < 0 && tDist < 0){
+            // entire triangle is below the plane
+            tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
+        }
+        else if (lDist > 0 && rDist > 0 && tDist > 0){
+            // entire triangle is above the plane
+            tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
+        }
+        else{
+            // triangle touches the plane, need to split it into constituent parts on either side of our plane
+        }
+    }
 
+    Shape shapeL = Shape(tL.data()->data());
+    Shape shapeR = Shape(tR.data()->data());
+
+    if(shapeCt == 2){
+        // add direction and put the shapes in the array
+        shapeL.setDirection(shapeL.getCenter() - origCtr);
+        shapeR.setDirection(shapeR.getCenter() - origCtr);
+        shapes[0] = shapeL;
+        shapes[1] = shapeR;
         return;
     }else{
         // recursively keep splitting!
-
+        split(shapeL, shapes, origCtr, shapeCt/2);
+        split(shapeR, &shapes[shapeCt/2], origCtr, shapeCt/2);
     }
 
 }
