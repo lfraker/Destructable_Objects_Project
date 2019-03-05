@@ -53,6 +53,7 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
         }
         else{
             // triangle touches the plane, need to split it into constituent parts on either side of our plane
+
         }
     }
 
@@ -71,7 +72,6 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
         split(shapeL, shapes, origCtr, shapeCt/2);
         split(shapeR, &shapes[shapeCt/2], origCtr, shapeCt/2);
     }
-
 }
 
 bool Voronoi::fequal(float a, float b)
