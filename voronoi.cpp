@@ -38,6 +38,7 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
     // Add all vertices on either side to separate shapes
     QVarLengthArray<QSharedPointer<Triangle>> tL;
     QVarLengthArray<QSharedPointer<Triangle>> tR;
+    QVarLengthArray<QSharedPointer<QVector3D>> intersections;
 
     for(int i = 0; i < sizeof(tris)/sizeof(*tris); i++){
         float lDist = tris[i].m_left.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
@@ -47,7 +48,11 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
             // entire triangle is below the plane
             tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
         }
-        else if (lDist > 0 && rDist > 0 && tDist > 0){
+        else if (lDist >= 0 && rDist >= 0 && tDist >= 0){
+            if(lDist == 0) intersections.append(QSharedPointer<QVector3D>(new QVector3D(tris[i].m_left.x(), tris[i].m_left.y(), tris[i].m_left.z())));
+            if(rDist == 0) intersections.append(QSharedPointer<QVector3D>(new QVector3D(tris[i].m_right.x(), tris[i].m_right.y(), tris[i].m_right.z())));
+            if(tDist == 0) intersections.append(QSharedPointer<QVector3D>(new QVector3D(tris[i].m_top.x(), tris[i].m_top.y(), tris[i].m_top.z())));
+
             // entire triangle is above the plane
             tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
         }
@@ -55,6 +60,9 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
             // triangle touches the plane, need to split it into constituent parts on either side of our plane
 
         }
+
+        // Finally use the intersection points to triangulate the cleavage surface and add these triangles to both shapes
+
     }
 
     Shape shapeL = Shape(tL.data()->data());

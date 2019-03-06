@@ -10,7 +10,15 @@ SOURCES += main.cpp \
     shapes/Cone.cpp \
     shapes/Cylinder.cpp \
     shapes/Shape.cpp \
-    voronoi.cpp
+    voronoi.cpp \
+    shapes/Cone.cpp \
+    shapes/Cube.cpp \
+    shapes/Cylinder.cpp \
+    shapes/Shape.cpp \
+    shapes/SpecialShapeOne.cpp \
+    shapes/SpecialShapeThree.cpp \
+    shapes/SpecialShapeTwo.cpp \
+    shapes/Sphere.cpp
 
 SOURCES += \
     mainwidget.cpp
@@ -24,6 +32,16 @@ HEADERS += \
     shapes/Cone.h \
     shapes/Cylinder.h \
     voronoi.h \
+    shapes/Triangle.h \
+    shapes/Cone.h \
+    shapes/Cube.h \
+    shapes/Cylinder.h \
+    shapes/Shape.h \
+    shapes/SpecialShapeOne.h \
+    shapes/SpecialShapeThree.h \
+    shapes/SpecialShapeTwo.h \
+    shapes/Sphere.h \
+    shapes/Torus.h \
     shapes/Triangle.h
 
 RESOURCES += \
