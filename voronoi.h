@@ -12,9 +12,9 @@ public:
     static void generatePoints(Triangle[], QVector3D[]);
 
 private:
+    static QVector3D intersection(Triangle, QVector3D, QVector3D);
     static void triangulate(Triangle[], Triangle&);
     static bool match(Triangle, QVector3D);
-    static bool fequal(float, float);
 };
 
 #endif // VORONOI_H
