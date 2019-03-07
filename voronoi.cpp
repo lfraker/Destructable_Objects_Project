@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <QList>
+#include <QMatrix4x4>
 #include <QSharedPointer>
 #include <array>
 
@@ -27,7 +28,7 @@ QVector3D Voronoi::intersection(Triangle tri, QVector3D la, QVector3D lb){
     QVector3D p01 = p1 - p0;
     QVector3D p02 = p2 - p0;
     QVector3D lab = lb - la;
-    QVector3D t = ((p01 * p02) * (la - p0)) / (-lab * (p01 * p02));
+    QVector3D t = (QVector3D::crossProduct(p01, p02) * (la - p0)) / (-lab * QVector3D::crossProduct(p01, p02));
     return la + (lab * t);
 }
 
@@ -40,18 +41,18 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
     generatePoints(tris, points);
 
     // Generate plane separating the two points
-    // TODO: this breaks if both points and the origin are colinear
-    QVector3D midpoint = QVector3D((points[0].x() + points[1].x())/2, (points[0].y() + points[1].y())/2, (points[0].z() + points[1].z())/2);
-    QVector3D cross = QVector3D::crossProduct(points[0], points[1]);
-    QVector3D cross2 = QVector3D::crossProduct(points[1], points[0]);
-    Triangle bisectingPlane = Triangle(midpoint, cross, cross2);
+    // TODO: this all breaks if both points and the origin are colinear
+    QVector3D a = QVector3D((points[0].x() + points[1].x())/2, (points[0].y() + points[1].y())/2, (points[0].z() + points[1].z())/2);
+    QVector3D b = QVector3D::crossProduct(points[0], points[1]);
+    QVector3D c = QVector3D::crossProduct(points[1], points[0]);
+    Triangle bisectingPlane = Triangle(a, b, c);
 
     // Add all vertices on either side to separate shapes
     QVarLengthArray<QSharedPointer<Triangle>> tL;
     QVarLengthArray<QSharedPointer<Triangle>> tR;
-    QVarLengthArray<QSharedPointer<QVector3D>> intersections;
+    QVarLengthArray<QVector3D> intersections;
 
-    for(int i = 0; i < sizeof(tris)/sizeof(*tris); i++){
+    for(unsigned int i = 0; i < sizeof(tris)/sizeof(*tris); i++){
         float lDist = tris[i].m_left.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         float rDist = tris[i].m_right.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         float tDist = tris[i].m_top.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
@@ -60,9 +61,9 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
             tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
         }
         else if (lDist >= 0 && rDist >= 0 && tDist >= 0){
-            if(lDist == 0) intersections.append(QSharedPointer<QVector3D>(new QVector3D(tris[i].m_left.x(), tris[i].m_left.y(), tris[i].m_left.z())));
-            if(rDist == 0) intersections.append(QSharedPointer<QVector3D>(new QVector3D(tris[i].m_right.x(), tris[i].m_right.y(), tris[i].m_right.z())));
-            if(tDist == 0) intersections.append(QSharedPointer<QVector3D>(new QVector3D(tris[i].m_top.x(), tris[i].m_top.y(), tris[i].m_top.z())));
+            if(lDist == 0.0f) intersections.append(QVector3D(tris[i].m_left.x(), tris[i].m_left.y(), tris[i].m_left.z()));
+            if(rDist == 0.0f) intersections.append(QVector3D(tris[i].m_right.x(), tris[i].m_right.y(), tris[i].m_right.z()));
+            if(tDist == 0.0f) intersections.append(QVector3D(tris[i].m_top.x(), tris[i].m_top.y(), tris[i].m_top.z()));
 
             // entire triangle is above the plane
             tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
@@ -73,8 +74,8 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
             if((lDist < 0 && rDist >= 0 && tDist >= 0) || (lDist >= 0 && rDist < 0 && tDist < 0)){
                 QVector3D i1 = intersection(bisectingPlane, tris[i].m_left, tris[i].m_right);
                 QVector3D i2 = intersection(bisectingPlane, tris[i].m_left, tris[i].m_top);
-                intersections.append(QSharedPointer<QVector3D>(new QVector3D(i1.x(), i1.y(), i1.z())));
-                intersections.append(QSharedPointer<QVector3D>(new QVector3D(i2.x(), i2.y(), i2.z())));
+                intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
+                intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(lDist < 0){
                     tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, i1, i2)));
                     tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
@@ -89,8 +90,8 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
             else if ((rDist < 0 && lDist >= 0 && tDist >= 0) || (rDist >= 0 && lDist < 0 && tDist < 0)){
                 QVector3D i1 = intersection(bisectingPlane, tris[i].m_right, tris[i].m_left);
                 QVector3D i2 = intersection(bisectingPlane, tris[i].m_right, tris[i].m_top);
-                intersections.append(QSharedPointer<QVector3D>(new QVector3D(i1.x(), i1.y(), i1.z())));
-                intersections.append(QSharedPointer<QVector3D>(new QVector3D(i2.x(), i2.y(), i2.z())));
+                intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
+                intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(rDist < 0){
                     tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
                     tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, i1, i2)));
@@ -106,8 +107,8 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
             else if ((tDist < 0 && lDist >= 0 && rDist >= 0) || (tDist >= 0 && lDist < 0 && rDist < 0)){
                 QVector3D i1 = intersection(bisectingPlane, tris[i].m_top, tris[i].m_left);
                 QVector3D i2 = intersection(bisectingPlane, tris[i].m_top, tris[i].m_right);
-                intersections.append(QSharedPointer<QVector3D>(new QVector3D(i1.x(), i1.y(), i1.z())));
-                intersections.append(QSharedPointer<QVector3D>(new QVector3D(i2.x(), i2.y(), i2.z())));
+                intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
+                intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(tDist < 0){
                     tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_top, i1, i2)));
                     tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
@@ -121,14 +122,41 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
         }
 
         // Finally use the intersection points to triangulate the cleavage surface and add these triangles to both shapes
-        QVarLengthArray<Triangle> triCleav;
-        //intersections
+        // Build 3D to 2D translation matrices
+        QVector3D ab = b - a;
+        QVector3D ac = c - a;
+        QVector3D n = QVector3D::crossProduct(ab, ac);
+        n.normalize();
+        ab.normalize();
+        QVector3D v = QVector3D::crossProduct(ab, n);
+        QMatrix4x4 d = QMatrix4x4(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1 ,1);
+        QMatrix4x4 s = QMatrix4x4(a.x(), a.x() + ab.x(), a.x() + n.x(), a.x() + n.x(),
+                                  a.y(), a.y() + ab.y(), a.y() + n.y(), a.y() + n.y(),
+                                  a.z(), a.z() + ab.z(), a.z() + n.z(), a.z() + n.z(),
+                                  1, 1, 1, 1);
+        QMatrix4x4 sInv = s.inverted();
+        QMatrix4x4 m = d * sInv;
+        m = m.transposed();
+        QMatrix4x4 mInv = m.inverted();
 
-        map<QVector3D, bool> matches;
+
+        // Convert 3D points on plane to 2D for triangulation
+        QVarLengthArray<QVector3D> intersections2d;
+        for(unsigned int i = 0; i < sizeof(intersections.data())/sizeof(*(intersections.data())); i++){
+            QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
+            QVector4D p2 = m * p;
+            intersections2d.append(QVector2D(p2.x(), p2.y()));
+        }
+
+        // Build triangulation in 2D
+
+
+        // Translate the 2D triangulation back to 3D
+        QVarLengthArray<Triangle> triCleav;
 
         // Add all the triangles to both shapes
         Triangle * triCleavArray = triCleav.data();
-        for(int i = 0; i < sizeof(triCleavArray)/sizeof(*triCleavArray); i++){
+        for(unsigned int i = 0; i < sizeof(triCleavArray)/sizeof(*triCleavArray); i++){
             Triangle t = triCleavArray[i];
             tL.append(QSharedPointer<Triangle>(new Triangle(t.m_left, t.m_right, t.m_top)));
             tR.append(QSharedPointer<Triangle>(new Triangle(t.m_left, t.m_right, t.m_top)));
@@ -176,7 +204,7 @@ void Voronoi::triangulate(Triangle tri[], Triangle & triangulation){
 
 void Voronoi::generatePoints(Triangle tri[], QVector3D pts[]){
     // Distribute points internal to the convex shape
-    for(int i = 0; i < sizeof(pts) / sizeof(*pts); i++){
+    for(unsigned int i = 0; i < sizeof(pts) / sizeof(*pts); i++){
         // Triangulate the polygon
         Triangle triangulation;
         triangulate(tri, triangulation);
