@@ -21,6 +21,9 @@ protected:
     void keyPressEvent(QKeyEvent*e) override;
     bool m_splitPaused = true;
 
+    void enterDestruct();
+    void exitDestruct();
+
 private slots:
     void on_destructButton_clicked();
     void on_advanceSplitButton_clicked();

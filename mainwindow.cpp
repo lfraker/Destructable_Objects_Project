@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->tesselationOneSlider->setValue(10);
     ui->tesselationTwoSlider->setValue(10);
+    exitDestruct();
 }
 
 MainWindow::~MainWindow()
@@ -17,10 +18,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_destructButton_clicked() {
     ui->openGLWidget->destructObj();
+    enterDestruct();
 }
 
 void MainWindow::on_resetButton_clicked() {
     ui->openGLWidget->reset();
+    exitDestruct();
 }
 
 void MainWindow::on_advanceSplitButton_clicked() {
@@ -62,21 +65,39 @@ void MainWindow::on_unpauseSplitButton_clicked() {
 
 void MainWindow::on_tesselationTwoSlider_valueChanged(int val) {
     ui->openGLWidget->sliderChanged(false, val);
+    exitDestruct();
+}
+
+void MainWindow::enterDestruct() {
+    ui->destructButton->setEnabled(false);
+    ui->advanceSplitButton->setEnabled(true);
+    ui->unpauseSplitButton->setEnabled(true);
+}
+
+void MainWindow::exitDestruct() {
+    ui->destructButton->setEnabled(true);
+    ui->advanceSplitButton->setEnabled(false);
+    ui->unpauseSplitButton->setEnabled(false);
 }
 
 void MainWindow::on_tesselationOneSlider_valueChanged(int val) {
     ui->openGLWidget->sliderChanged(true, val);
+    exitDestruct();
 }
 
 void MainWindow::on_cylinderSelect_clicked() {
     ui->openGLWidget->changeShapeType(MainWidget::ShapeType::CylinderType);
+    exitDestruct();
 }
 void MainWindow::on_cubeSelect_clicked() {
     ui->openGLWidget->changeShapeType(MainWidget::ShapeType::CubeType);
+    exitDestruct();
 }
 void MainWindow::on_sphereSelect_clicked() {
     ui->openGLWidget->changeShapeType(MainWidget::ShapeType::SphereType);
+    exitDestruct();
 }
 void MainWindow::on_coneSelect_clicked() {
     ui->openGLWidget->changeShapeType(MainWidget::ShapeType::ConeType);
+    exitDestruct();
 }
