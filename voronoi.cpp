@@ -28,9 +28,12 @@ QVector3D Voronoi::intersection(Triangle tri, QVector3D la, QVector3D lb){
     QVector3D p01 = p1 - p0;
     QVector3D p02 = p2 - p0;
     QVector3D lab = lb - la;
-    QVector3D p12cp = QVector3D::crossProduct(p01, p02);
     QVector3D t = (QVector3D::crossProduct(p01, p02) * (la - p0)) / (-lab * QVector3D::crossProduct(p01, p02));
-    return la + (lab * t);
+    QVector3D i = la + (lab * t);
+    if(qFuzzyCompare(la.x(), lb.x())) i.setX(lb.x());
+    if(qFuzzyCompare(la.y(), lb.y())) i.setY(lb.y());
+    if(qFuzzyCompare(la.z(), lb.z())) i.setZ(lb.z());
+    return i;
 }
 
 void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt)
