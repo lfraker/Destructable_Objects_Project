@@ -37,6 +37,8 @@ public:
 
     void deleteVertexCache();
 
+    QVector3D m_direction = QVector3D(0, 0, 0);
+
 
 protected:
 
@@ -50,7 +52,6 @@ protected:
     float m_radius;
     Triangle* m_triangles = NULL;
     QVector3D* m_vertices = NULL;
-    QVector3D m_direction;
 };
 
 #endif // SHAPE_H
