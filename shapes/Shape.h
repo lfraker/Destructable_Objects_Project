@@ -31,6 +31,7 @@ public:
     //void addVertNorm(glm::vec3 vert, glm::vec3 norm); // Adds a vertex and a normal to the array
 
     int numVertices(); // returns the number of vertices in the array.
+    int numTris();
 
     //int numInds(); // returns the number of indices in the array.e
 

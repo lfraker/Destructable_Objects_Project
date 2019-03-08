@@ -37,8 +37,9 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     Triangle * tris = shape->getTris();
 
     // Split the shape into two
-    QVector3D * points = new QVector3D[2];
-    generatePoints(tris, points);
+    int num_pts = 2;
+    QVector3D * points = new QVector3D[num_pts];
+    generatePoints(tris, points, shape->numTris(), num_pts);
 
     // Generate plane separating the two points
     // TODO: this all breaks if both points and the origin are colinear
@@ -52,7 +53,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     QVarLengthArray<QSharedPointer<Triangle>> tR;
     QVarLengthArray<QVector3D> intersections;
 
-    for(unsigned int i = 0; i < sizeof(tris)/sizeof(*tris); i++){
+    for(unsigned int i = 0; i < shape->numTris(); i++){
         float lDist = tris[i].m_left.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         float rDist = tris[i].m_right.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         float tDist = tris[i].m_top.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
@@ -142,7 +143,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
         // Convert 3D points on plane to 2D for triangulation
         QVarLengthArray<QVector3D> intersections2d;
-        for(unsigned int i = 0; i < sizeof(intersections.data())/sizeof(*(intersections.data())); i++){
+        for(unsigned int i = 0; i < intersections.size(); i++){
             QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
             QVector4D p2 = m * p;
             intersections2d.append(QVector2D(p2.x(), p2.y()));
@@ -153,14 +154,14 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
         // Translate the 2D triangulation back to 3D
         QVarLengthArray<Triangle> triCleav;
-        for(unsigned int i = 0; i < sizeof(intersections2d.data())/sizeof(*(intersections2d.data())); i++){
+        for(unsigned int i = 0; i < intersections2d.size(); i++){
             //intersections2d
             //triCleav.append(new Triangle(
         }
 
         // Add all the triangles to both shapes
         Triangle * triCleavArray = triCleav.data();
-        for(unsigned int i = 0; i < sizeof(triCleavArray)/sizeof(*triCleavArray); i++){
+        for(unsigned int i = 0; i < triCleav.size(); i++){
             Triangle t = triCleavArray[i];
             tL.append(QSharedPointer<Triangle>(new Triangle(t.m_left, t.m_right, t.m_top)));
             tR.append(QSharedPointer<Triangle>(new Triangle(t.m_left, t.m_right, t.m_top)));
@@ -190,9 +191,9 @@ bool Voronoi::match(Triangle t1, QVector3D v2){
     return qFuzzyCompare(t1.m_left, v2) || qFuzzyCompare(t1.m_top, v2) || qFuzzyCompare(t1.m_right, v2);
 }
 
-void Voronoi::triangulate(Triangle tri[], Triangle & triangulation){
+void Voronoi::triangulate(Triangle tri[], Triangle & triangulation, int num_tris){
     // Generate a random triangle within the shape
-    int triLength = sizeof(tri)/sizeof(*tri);
+    int triLength = num_tris; //sizeof(tri)/sizeof(*tri);
     // pick random point
     Triangle firstTriangle = tri[rand() % triLength];
     int secondIdx = rand() % triLength;
@@ -206,12 +207,12 @@ void Voronoi::triangulate(Triangle tri[], Triangle & triangulation){
     triangulation = Triangle(firstTriangle.m_left, tri[secondIdx].m_left, tri[thirdIdx].m_left);
 }
 
-void Voronoi::generatePoints(Triangle tri[], QVector3D pts[]){
+void Voronoi::generatePoints(Triangle tri[], QVector3D pts[], int num_tris, int num_pts){
     // Distribute points internal to the convex shape
-    for(unsigned int i = 0; i < sizeof(pts) / sizeof(*pts); i++){
+    for(unsigned int i = 0; i < num_pts; i++){
         // Triangulate the polygon
         Triangle triangulation;
-        triangulate(tri, triangulation);
+        triangulate(tri, triangulation, num_tris);
         // Pick random point on the triangle, weighted by area
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float s = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);

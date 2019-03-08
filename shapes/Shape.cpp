@@ -18,6 +18,9 @@ int Shape::numVertices() {
     return m_numTris * 3;
 }
 
+int Shape::numTris() {
+    return m_numTris;
+}
 void Shape::genVecs() {
     m_vertices = new QVector3D[this->numVertices()];
     int vertCtr = 0;
