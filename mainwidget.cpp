@@ -88,7 +88,7 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 void MainWidget::destructObj() {
     // TODO Trigger destruction here (expect to get back # of shapes, instance of shapes, and direction of movement for each shape
     int i = 5;
-    Shape ** temp_shapes = Voronoi::split(m_shapes[0]);
+    Shape ** temp_shapes = Voronoi::split(m_shapes[0], 1);
     deleteShapeResources();
     m_numShapes = 4;
     m_shapes = temp_shapes;
@@ -372,7 +372,6 @@ void MainWidget::paintGL()
         matrix.translate(0.0, 0.0, -10.0);
         matrix.translate(m_camTranslate);
         matrix.translate(m_shapes[i]->m_direction);
-        matrix.translate(direc);
         matrix.rotate(m_camRotation);
         matrix.scale(m_camZoom);
 
