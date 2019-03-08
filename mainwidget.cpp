@@ -87,10 +87,10 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 
 void MainWidget::destructObj() {
     // TODO Trigger destruction here (expect to get back # of shapes, instance of shapes, and direction of movement for each shape
-    int i = 5;
-    Shape ** temp_shapes = Voronoi::split(m_shapes[0], 1);
+    int depth = 2;
+    Shape ** temp_shapes = Voronoi::split(m_shapes[0], depth);
     deleteShapeResources();
-    m_numShapes = 4;
+    m_numShapes = static_cast<int>(pow(2, depth));
     m_shapes = temp_shapes;
     resetGl();
     update();
