@@ -167,6 +167,11 @@ void MainWidget::deleteShapeResources() {
     m_transforms = NULL;
 }
 
+void MainWidget::pauseResumeSplit(bool pause) {
+    m_pauseSplit = pause;
+}
+
+
 void MainWidget::refreshShape() {
     deleteShapeResources();
     Shape * temp_shape;
@@ -268,15 +273,6 @@ void MainWidget::timerEvent(QTimerEvent *)
     }
 }
 
-void MainWidget::generateDestructionLists(bool destruct) {
-    // Plaseholder code - add in voronoi collision code
-    if (destruct) {
-
-    }
-    else {
-
-    }
-}
 
 void MainWidget::initializeGL()
 {
@@ -362,6 +358,12 @@ void MainWidget::resizeGL(int w, int h)
 
 void MainWidget::paintGL()
 {
+    if (!m_pauseSplit) {
+        for (int i = 0; i < m_numShapes; i++) {
+            m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.001);
+        }
+    }
+
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     this->makeCurrent();
@@ -372,10 +374,10 @@ void MainWidget::paintGL()
         // Calculate model view transformation
         QMatrix4x4 matrix;
         matrix.translate(0.0, 0.0, -10.0);
-        matrix.rotate(m_camRotation);
         matrix.translate(m_camTranslate);
-        matrix.translate(m_shapes[i]->m_direction);
         matrix.scale(m_camZoom);
+        matrix.rotate(m_camRotation);
+        matrix.translate(m_shapes[i]->m_direction);
 
         // Set modelview-projection matrix
         m_program.setUniformValue("mvp_matrix", projection * matrix);

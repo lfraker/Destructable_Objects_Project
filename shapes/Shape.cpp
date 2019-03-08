@@ -6,12 +6,14 @@ Shape::Shape(int p1, int p2)
 {
     m_param1 = p1;
     m_param2 = p2;
+    m_destructShape = false;
 }
 
 Shape::Shape(Triangle* t, int length)
 {
     m_numTris = length;
     this->setTriangles(t);
+    m_destructShape = true;
 }
 
 int Shape::numVertices() {
@@ -63,7 +65,7 @@ void Shape::setTriangles(Triangle* t)
 }
 
 Shape::~Shape() {
-    if (m_triangles != NULL) {
+    if (m_triangles != NULL && !m_destructShape) {
         delete [] m_triangles;
         m_triangles = NULL;
     }

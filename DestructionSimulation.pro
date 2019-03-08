@@ -36,7 +36,6 @@ target.path = $$[QT_INSTALL_EXAMPLES]/opengl/cube
 INSTALLS += target
 
 
-
 ##-------------------------------------------------
 ##
 ## Project created by QtCreator 2019-02-04T23:55:35

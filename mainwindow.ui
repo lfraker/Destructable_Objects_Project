@@ -198,6 +198,19 @@
      <string>Advance Split</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="unpauseSplitButton">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>490</y>
+      <width>114</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Resume Split</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

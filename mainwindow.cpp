@@ -48,6 +48,17 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
     }
 }
 
+void MainWindow::on_unpauseSplitButton_clicked() {
+    m_splitPaused = !m_splitPaused;
+    if (m_splitPaused) {
+        ui->unpauseSplitButton->setText("Resume Split");
+    }
+    else {
+        ui->unpauseSplitButton->setText("Pause Split");
+    }
+
+    ui->openGLWidget->pauseResumeSplit(m_splitPaused);
+}
 
 void MainWindow::on_tesselationTwoSlider_valueChanged(int val) {
     ui->openGLWidget->sliderChanged(false, val);
