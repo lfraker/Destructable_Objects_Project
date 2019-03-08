@@ -154,8 +154,8 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
         // Translate the 2D triangulation back to 3D
         QVarLengthArray<Triangle> triCleav;
         for(unsigned int i = 0; i < sizeof(intersections2d.data())/sizeof(*(intersections2d.data())); i++){
-            intersections2d
-            triCleav.append(new Triangle(
+            //intersections2d
+            //triCleav.append(new Triangle(
         }
 
         // Add all the triangles to both shapes

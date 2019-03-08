@@ -15,9 +15,6 @@ SOURCES += main.cpp \
     shapes/Cube.cpp \
     shapes/Cylinder.cpp \
     shapes/Shape.cpp \
-    shapes/SpecialShapeOne.cpp \
-    shapes/SpecialShapeThree.cpp \
-    shapes/SpecialShapeTwo.cpp \
     shapes/Sphere.cpp
 
 SOURCES += \
@@ -37,9 +34,6 @@ HEADERS += \
     shapes/Cube.h \
     shapes/Cylinder.h \
     shapes/Shape.h \
-    shapes/SpecialShapeOne.h \
-    shapes/SpecialShapeThree.h \
-    shapes/SpecialShapeTwo.h \
     shapes/Sphere.h \
     shapes/Torus.h \
     shapes/Triangle.h
