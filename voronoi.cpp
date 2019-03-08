@@ -36,7 +36,7 @@ QVector3D Voronoi::intersection(Triangle tri, QVector3D la, QVector3D lb){
     return i;
 }
 
-int orientation(QVector2D a, QVector2D b, QVector2D c)
+int Voronoi::orientation(QVector2D a, QVector2D b, QVector2D c)
 {
     float val = (b.y() - a.y()) * (c.x() - b.x()) -
               (b.x() - a.x()) * (c.y() - b.y());
@@ -161,13 +161,13 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
         float maxY = -std::numeric_limits<float>::max();
         float x = 0;
         float y = 0;
-        QVector2D leftMost;
-        QVarLengthArray<QVector3D> intersections2d;
+        int leftMost = -1;
+        QVarLengthArray<QVector2D> intersections2d;
         for(int i = 0; i < intersections.size(); i++){
             QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
             QVector4D p2 = m * p;
             intersections2d.append(QVector2D(p2.x(), p2.y()));
-            if(p2.x() < minX) { minX = p2.x(); leftMost = QVector2D(p2.x(), p2.y()); }
+            if(p2.x() < minX) { minX = p2.x(); leftMost = i; }
             if(p2.y() < minY) minY = p2.y();
             if(p2.x() > maxX) maxX = p2.x();
             if(p2.y() > maxY) maxY = p2.y();
@@ -178,16 +178,34 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
         // Build triangulation in 2D
         QVector2D center = QVector2D(x/intersections.size(), y/intersections.size());
         QVector2D center2 = QVector2D((maxX - minX)/2, (maxY - minY)/2);
+
         // Build triangles around center point
-
-
         // Translate the 2D triangulation back to 3D
         QVarLengthArray<Triangle> triCleav;
-        for(int i = 0; i < intersections2d.size(); i++){
-            QVector4D p1 = QVector4D(intersections2d[i].x(), intersections2d[i].y(), 0, 1);
-            QVector4D p2 = QVector4D(intersections2d[i].x(), intersections2d[i].y(), 0, 1);
-            QVector4D p3 = QVector4D(intersections2d[i].x(), intersections2d[i].y(), 0, 1);
-            //triCleav.append(Triangle((mInv * p1).toVector3D(), (mInv * p2).toVector3D(), (mInv * p3).toVector3D()));
+        QVarLengthArray<QVector2D> poly;
+        int p = leftMost;
+        int q;
+        do
+        {
+            poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
+
+            // search through points counter clockwise
+            q = (p + 1) % intersections2d.size();
+            for (int i = 0; i < intersections2d.size(); i++)
+            {
+               if (orientation(intersections2d[p], intersections2d[i], intersections2d[q]) == 2){
+                   q = i;
+               }
+            }
+
+            p = q;
+        } while (p != leftMost);
+
+        for(int i = 0; i < poly.size() + 1; i++){
+            QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
+            QVector4D p2 = QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
+            QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
+            triCleav.append(Triangle((mInv * p1).toVector3D(), (mInv * p2).toVector3D(), (mInv * p3).toVector3D()));
         }
 
         // Add all the triangles to both shapes

@@ -15,6 +15,7 @@ private:
     static QVector3D intersection(Triangle, QVector3D, QVector3D);
     static void triangulate(Triangle[], Triangle&, int);
     static bool match(Triangle, QVector3D);
+    static int orientation(QVector2D, QVector2D, QVector2D);
 };
 
 #endif // VORONOI_H
