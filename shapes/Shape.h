@@ -15,10 +15,10 @@ class Shape
 public:
     //Constructor for Shape. Pass in parameter1 and 2 determining the number of triangles that make up the shape
     Shape(int p1, int p2);
-    Shape(Triangle*);
+    Shape(Triangle*, int length);
 
     //Destructor for Shape.
-    ~Shape();
+    virtual ~Shape();
 
     void genVecs();
     QVector3D* getVecs(); // Return shape's vertex data

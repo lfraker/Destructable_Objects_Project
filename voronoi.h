@@ -6,9 +6,9 @@
 class Voronoi
 {
 public:
-    static Shape* split(Shape);
-    static Shape* split(Shape, int);
-    static void split(Shape, Shape*, QVector3D, int);
+    static Shape** split(Shape*);
+    static Shape** split(Shape*, int);
+    static void split(Shape*, Shape**, QVector3D, int);
     static void generatePoints(Triangle[], QVector3D[]);
 
 private:

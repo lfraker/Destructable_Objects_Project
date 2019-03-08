@@ -50,7 +50,6 @@
 
 
 #include "mainwidget.h"
-#include "voronoi.h"
 
 #include <QMouseEvent>
 
@@ -88,7 +87,13 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 
 void MainWidget::destructObj() {
     // TODO Trigger destruction here (expect to get back # of shapes, instance of shapes, and direction of movement for each shape
-
+    int i = 5;
+    Shape ** temp_shapes = Voronoi::split(m_shapes[0]);
+    deleteShapeResources();
+    m_numShapes = 4;
+    m_shapes = temp_shapes;
+    resetGl();
+    update();
 }
 
 void MainWidget::reset() {
@@ -156,7 +161,6 @@ void MainWidget::deleteShapeResources() {
 
 void MainWidget::refreshShape() {
     deleteShapeResources();
-
     Shape * temp_shape;
     switch (m_shapeType) {
         case SphereType:
@@ -282,7 +286,7 @@ void MainWidget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     // Enable point size adjustment
-    glEnable(GL_PROGRAM_POINT_SIZE);
+    //glEnable(GL_PROGRAM_POINT_SIZE);
 
     refreshShape();
 

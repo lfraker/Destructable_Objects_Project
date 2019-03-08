@@ -68,6 +68,7 @@
 #include <shapes/Cylinder.h>
 #include <shapes/Cone.h>
 #include <shapes/Sphere.h>
+#include "voronoi.h"
 
 //class GeometryEngine;
 

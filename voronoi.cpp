@@ -7,17 +7,17 @@
 #include <QSharedPointer>
 #include <array>
 
-Shape* Voronoi::split(Shape shape)
+Shape** Voronoi::split(Shape* shape)
 {
     return split(shape, 2);
 }
 
-Shape* Voronoi::split(Shape shape, const int depth)
+Shape** Voronoi::split(Shape* shape, const int depth)
 {
     int pts = static_cast<int>(pow(2, depth));
-    static Shape* shapes;
-    shapes = static_cast<Shape*>(calloc(pts, sizeof(Shape)));
-    split(shape, shapes, shape.getCenter(), pts);
+    Shape ** shapes;
+    shapes = new Shape * [pts];
+    split(shape, shapes, shape->getCenter(), pts);
     return shapes;
 }
 
@@ -32,9 +32,9 @@ QVector3D Voronoi::intersection(Triangle tri, QVector3D la, QVector3D lb){
     return la + (lab * t);
 }
 
-void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
+void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt)
 {
-    Triangle * tris = shape.getTris();
+    Triangle * tris = shape->getTris();
 
     // Split the shape into two
     QVector3D * points = new QVector3D[2];
@@ -167,13 +167,13 @@ void Voronoi::split(Shape shape, Shape* shapes, QVector3D origCtr, int shapeCt)
         }
     }
 
-    Shape shapeL = Shape(tL.data()->data());
-    Shape shapeR = Shape(tR.data()->data());
+    Shape* shapeL = new Shape(tL.data()->data(), tL.size());
+    Shape* shapeR = new Shape(tR.data()->data(), tR.size());
 
     if(shapeCt == 2){
         // add direction and put the shapes in the array
-        shapeL.setDirection(shapeL.getCenter() - origCtr);
-        shapeR.setDirection(shapeR.getCenter() - origCtr);
+        shapeL->setDirection(shapeL->getCenter() - origCtr);
+        shapeR->setDirection(shapeR->getCenter() - origCtr);
         shapes[0] = shapeL;
         shapes[1] = shapeR;
         return;
