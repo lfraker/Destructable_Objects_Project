@@ -19,6 +19,10 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent*e) override;
+    bool m_splitPaused = true;
+
+    void enterDestruct();
+    void exitDestruct();
 
 private slots:
     void on_destructButton_clicked();
@@ -30,6 +34,7 @@ private slots:
     void on_cubeSelect_clicked();
     void on_sphereSelect_clicked();
     void on_coneSelect_clicked();
+    void on_unpauseSplitButton_clicked();
 
 
 private:

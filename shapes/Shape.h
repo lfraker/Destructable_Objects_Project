@@ -51,6 +51,7 @@ protected:
     float m_radius;
     Triangle* m_triangles = NULL;
     QVector3D* m_vertices = NULL;
+    bool m_destructShape;
 };
 
 #endif // SHAPE_H

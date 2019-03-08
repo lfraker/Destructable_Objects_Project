@@ -86,6 +86,7 @@ public:
     enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
     void destructObj();
+    void pauseResumeSplit(bool pause);
     void advanceSplitIncr();
     void reset();
     void changeShapeType(ShapeType newType);
@@ -103,8 +104,6 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-
-    void generateDestructionLists(bool destruct);
 
     void deleteShapeResources();
 
@@ -145,6 +144,7 @@ private:
     QOpenGLVertexArrayObject ** m_vaos = NULL;
     QOpenGLBuffer ** m_positionBuffers = NULL;
     TransformDetails * m_transforms = NULL;
+    bool m_pauseSplit = true;
 };
 
 #endif // MAINWIDGET_H
