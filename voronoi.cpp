@@ -36,6 +36,15 @@ QVector3D Voronoi::intersection(Triangle tri, QVector3D la, QVector3D lb){
     return i;
 }
 
+int orientation(QVector2D a, QVector2D b, QVector2D c)
+{
+    float val = (b.y() - a.y()) * (c.x() - b.x()) -
+              (b.x() - a.x()) * (c.y() - b.y());
+
+    if (qFuzzyCompare(val, 0.0f)) return 0;  // colinear
+    return (val > 0)? 1: 2; // clock or counterclock wise
+}
+
 void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt)
 {
     Triangle * tris = shape->getTris();
@@ -57,7 +66,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     QVarLengthArray<Triangle> tR;
     QVarLengthArray<QVector3D> intersections;
 
-    for(unsigned int i = 0; i < shape->numTris(); i++){
+    for(int i = 0; i < shape->numTris(); i++){
         float lDist = tris[i].m_left.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         float rDist = tris[i].m_right.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         float tDist = tris[i].m_top.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
@@ -133,7 +142,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
         QVector3D n = QVector3D::crossProduct(ab, ac);
         n.normalize();
         ab.normalize();
-        QVector3D v = QVector3D::crossProduct(ab, n);
+        QVector3D v = QVector3D::crossProduct(ab, n); // TODO not needed I don't think
         QMatrix4x4 d = QMatrix4x4(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1 ,1);
         QMatrix4x4 s = QMatrix4x4(a.x(), a.x() + ab.x(), a.x() + n.x(), a.x() + n.x(),
                                   a.y(), a.y() + ab.y(), a.y() + n.y(), a.y() + n.y(),
@@ -150,34 +159,41 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
         float minY = std::numeric_limits<float>::max();
         float maxX = -std::numeric_limits<float>::max();
         float maxY = -std::numeric_limits<float>::max();
-
+        float x = 0;
+        float y = 0;
+        QVector2D leftMost;
         QVarLengthArray<QVector3D> intersections2d;
-        for(unsigned int i = 0; i < intersections.size(); i++){
+        for(int i = 0; i < intersections.size(); i++){
             QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
             QVector4D p2 = m * p;
             intersections2d.append(QVector2D(p2.x(), p2.y()));
-            if(p2.x() < minX) minX = p2.x();
+            if(p2.x() < minX) { minX = p2.x(); leftMost = QVector2D(p2.x(), p2.y()); }
             if(p2.y() < minY) minY = p2.y();
             if(p2.x() > maxX) maxX = p2.x();
             if(p2.y() > maxY) maxY = p2.y();
+            x += p2.x();
+            y += p2.y();
         }
 
         // Build triangulation in 2D
-        QVector2D center = QVector2D((maxX - minX)/2, (maxY - minY)/2);
+        QVector2D center = QVector2D(x/intersections.size(), y/intersections.size());
+        QVector2D center2 = QVector2D((maxX - minX)/2, (maxY - minY)/2);
+        // Build triangles around center point
+
 
         // Translate the 2D triangulation back to 3D
         QVarLengthArray<Triangle> triCleav;
-        for(unsigned int i = 0; i < intersections2d.size(); i++){
-            //intersections2d
-            //triCleav.append(Triangle(
+        for(int i = 0; i < intersections2d.size(); i++){
+            QVector4D p1 = QVector4D(intersections2d[i].x(), intersections2d[i].y(), 0, 1);
+            QVector4D p2 = QVector4D(intersections2d[i].x(), intersections2d[i].y(), 0, 1);
+            QVector4D p3 = QVector4D(intersections2d[i].x(), intersections2d[i].y(), 0, 1);
+            //triCleav.append(Triangle((mInv * p1).toVector3D(), (mInv * p2).toVector3D(), (mInv * p3).toVector3D()));
         }
 
         // Add all the triangles to both shapes
-        Triangle * triCleavArray = triCleav.data();
-        for(unsigned int i = 0; i < triCleav.size(); i++){
-            Triangle t = triCleavArray[i];
-            tL.append(Triangle(t.m_left, t.m_right, t.m_top));
-            tR.append(Triangle(t.m_left, t.m_right, t.m_top));
+        for(int i = 0; i < triCleav.size(); i++){
+            tL.append(triCleav[i]);
+            tR.append(triCleav[i]);
         }
     }
 
