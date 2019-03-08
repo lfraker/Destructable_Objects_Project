@@ -49,8 +49,8 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     Triangle bisectingPlane = Triangle(a, b, c);
 
     // Add all vertices on either side to separate shapes
-    QVarLengthArray<QSharedPointer<Triangle>> tL;
-    QVarLengthArray<QSharedPointer<Triangle>> tR;
+    QVarLengthArray<Triangle> tL;
+    QVarLengthArray<Triangle> tR;
     QVarLengthArray<QVector3D> intersections;
 
     for(unsigned int i = 0; i < shape->numTris(); i++){
@@ -59,7 +59,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
         float tDist = tris[i].m_top.distanceToPlane(bisectingPlane.m_left, bisectingPlane.m_right, bisectingPlane.m_top);
         if(lDist < 0 && rDist < 0 && tDist < 0){
             // entire triangle is below the plane
-            tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
+            tL.append(Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top));
         }
         else if (lDist >= 0 && rDist >= 0 && tDist >= 0){
             if(lDist == 0.0f) intersections.append(QVector3D(tris[i].m_left.x(), tris[i].m_left.y(), tris[i].m_left.z()));
@@ -67,7 +67,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
             if(tDist == 0.0f) intersections.append(QVector3D(tris[i].m_top.x(), tris[i].m_top.y(), tris[i].m_top.z()));
 
             // entire triangle is above the plane
-            tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top)));
+            tR.append(Triangle(tris[i].m_left, tris[i].m_right, tris[i].m_top));
         }
         else{
             // triangle touches the plane, need to split it into constituent parts on either side of our plane
@@ -78,14 +78,14 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(lDist < 0){
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, i1, i2)));
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, tris[i].m_top, i2)));
+                    tL.append(Triangle(tris[i].m_left, i1, i2));
+                    tR.append(Triangle(tris[i].m_right, i1, i2));
+                    tR.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
                 }
                 else{
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, i1, i2)));
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, tris[i].m_top, i2)));
+                    tR.append(Triangle(tris[i].m_left, i1, i2));
+                    tL.append(Triangle(tris[i].m_right, i1, i2));
+                    tL.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
                 }
             }
             else if ((rDist < 0 && lDist >= 0 && tDist >= 0) || (rDist >= 0 && lDist < 0 && tDist < 0)){
@@ -94,14 +94,14 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(rDist < 0){
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, i1, i2)));
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_top, i2)));
+                    tL.append(Triangle(tris[i].m_right, i1, i2));
+                    tR.append(Triangle(tris[i].m_left, i1, i2));
+                    tR.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
                 }
                 else{
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, i1, i2)));
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_left, tris[i].m_top, i2)));
+                    tR.append(Triangle(tris[i].m_right, i1, i2));
+                    tL.append(Triangle(tris[i].m_left, i1, i2));
+                    tL.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
                 }
 
             }
@@ -111,13 +111,13 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(tDist < 0){
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_top, i1, i2)));
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, tris[i].m_left, i2)));
+                    tL.append(Triangle(tris[i].m_top, i1, i2));
+                    tR.append(Triangle(tris[i].m_right, i1, i2));
+                    tR.append(Triangle(tris[i].m_right, tris[i].m_left, i2));
                 }else{
-                    tR.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_top, i1, i2)));
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, i1, i2)));
-                    tL.append(QSharedPointer<Triangle>(new Triangle(tris[i].m_right, tris[i].m_left, i2)));
+                    tR.append(Triangle(tris[i].m_top, i1, i2));
+                    tL.append(Triangle(tris[i].m_right, i1, i2));
+                    tL.append(Triangle(tris[i].m_right, tris[i].m_left, i2));
                 }
             }
         }
@@ -142,15 +142,24 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
 
         // Convert 3D points on plane to 2D for triangulation
+        float minX = std::numeric_limits<float>::max();
+        float minY = std::numeric_limits<float>::max();
+        float maxX = -std::numeric_limits<float>::max();
+        float maxY = -std::numeric_limits<float>::max();
+
         QVarLengthArray<QVector3D> intersections2d;
         for(unsigned int i = 0; i < intersections.size(); i++){
             QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
             QVector4D p2 = m * p;
             intersections2d.append(QVector2D(p2.x(), p2.y()));
+            if(p2.x() < minX) minX = p2.x();
+            if(p2.y() < minY) minY = p2.y();
+            if(p2.x() > maxX) maxX = p2.x();
+            if(p2.y() > maxY) maxY = p2.y();
         }
 
         // Build triangulation in 2D
-
+        QVector2D center = QVector2D((maxX - minX)/2, (maxY - minY)/2);
 
         // Translate the 2D triangulation back to 3D
         QVarLengthArray<Triangle> triCleav;
@@ -163,13 +172,13 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
         Triangle * triCleavArray = triCleav.data();
         for(unsigned int i = 0; i < triCleav.size(); i++){
             Triangle t = triCleavArray[i];
-            tL.append(QSharedPointer<Triangle>(new Triangle(t.m_left, t.m_right, t.m_top)));
-            tR.append(QSharedPointer<Triangle>(new Triangle(t.m_left, t.m_right, t.m_top)));
+            tL.append(Triangle(t.m_left, t.m_right, t.m_top));
+            tR.append(Triangle(t.m_left, t.m_right, t.m_top));
         }
     }
 
-    Shape* shapeL = new Shape(tL.data()->data(), tL.size());
-    Shape* shapeR = new Shape(tR.data()->data(), tR.size());
+    Shape* shapeL = new Shape(tL.data(), tL.size());
+    Shape* shapeR = new Shape(tR.data(), tR.size());
 
     if(shapeCt == 2){
         // add direction and put the shapes in the array

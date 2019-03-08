@@ -39,10 +39,10 @@ QVector3D Shape::getCenter(){
     float minX = std::numeric_limits<float>::max();
     float minY = std::numeric_limits<float>::max();
     float minZ = std::numeric_limits<float>::max();
-    float maxX = std::numeric_limits<float>::min();
-    float maxY = std::numeric_limits<float>::min();
-    float maxZ = std::numeric_limits<float>::min();
-    for(int i = 0; i < sizeof(m_vertices) / sizeof(*m_vertices); i++){
+    float maxX = -std::numeric_limits<float>::max();
+    float maxY = -std::numeric_limits<float>::max();
+    float maxZ = -std::numeric_limits<float>::max();
+    for(int i = 0; i < m_numVerts; i++){
         if(m_vertices[i].x() < minX) minX = m_vertices[i].x();
         if(m_vertices[i].y() < minY) minY = m_vertices[i].y();
         if(m_vertices[i].z() < minZ) minZ = m_vertices[i].z();
