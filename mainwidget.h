@@ -86,6 +86,7 @@ public:
     enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
     void destructObj();
+    void advanceSplitIncr();
     void reset();
     void changeShapeType(ShapeType newType);
     void sliderChanged(bool p1, int val);

@@ -123,6 +123,12 @@ void MainWidget::pan(int leftRight, int forwardBack) {
     update();
 }
 
+void MainWidget::advanceSplitIncr() {
+    for (int i = 0; i < m_numShapes; i++) {
+        m_shapes[i]->m_direction += m_shapes[i]->m_direction;
+    }
+}
+
 void MainWidget::deleteShapeResources() {
     if (m_shapes != NULL) {
         for (int i = 0; i < m_numShapes; i++) {
@@ -365,7 +371,8 @@ void MainWidget::paintGL()
         QMatrix4x4 matrix;
         matrix.translate(0.0, 0.0, -10.0);
         matrix.translate(m_camTranslate);
-        matrix.translate(m_transforms[i].m_shapeTranslate);
+        matrix.translate(m_shapes[i]->m_direction);
+        matrix.translate(direc);
         matrix.rotate(m_camRotation);
         matrix.scale(m_camZoom);
 

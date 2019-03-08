@@ -23,6 +23,10 @@ void MainWindow::on_resetButton_clicked() {
     ui->openGLWidget->reset();
 }
 
+void MainWindow::on_advanceSplitButton_clicked() {
+    ui->openGLWidget->advanceSplitIncr();
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *e) {
     if (e->key() == Qt::Key_E) {
         ui->openGLWidget->zoom(1);
