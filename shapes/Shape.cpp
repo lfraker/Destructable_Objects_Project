@@ -36,21 +36,15 @@ QVector3D* Shape::getVecs() {
 }
 
 QVector3D Shape::getCenter(){
-    float minX = std::numeric_limits<float>::max();
-    float minY = std::numeric_limits<float>::max();
-    float minZ = std::numeric_limits<float>::max();
-    float maxX = -std::numeric_limits<float>::max();
-    float maxY = -std::numeric_limits<float>::max();
-    float maxZ = -std::numeric_limits<float>::max();
+    float x = 0;
+    float y = 0;
+    float z = 0;
     for(int i = 0; i < this->numVertices(); i++){
-        if(m_vertices[i].x() < minX) minX = m_vertices[i].x();
-        if(m_vertices[i].y() < minY) minY = m_vertices[i].y();
-        if(m_vertices[i].z() < minZ) minZ = m_vertices[i].z();
-        if(m_vertices[i].x() > maxX) maxX = m_vertices[i].x();
-        if(m_vertices[i].y() > maxY) maxY = m_vertices[i].y();
-        if(m_vertices[i].z() > maxZ) maxZ = m_vertices[i].z();
+        x += m_vertices[i].x();
+        y += m_vertices[i].y();
+        z += m_vertices[i].z();
     }
-    return QVector3D((maxX - minX)/2, (maxY - minY)/2, (maxZ - minZ)/2);
+    return QVector3D((x)/this->numVertices(), (y)/this->numVertices(), (z)/this->numVertices());
 }
 
 Triangle* Shape::getTris() {
