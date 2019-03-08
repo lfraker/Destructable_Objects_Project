@@ -91,7 +91,7 @@ public:
     void changeShapeType(ShapeType newType);
     void sliderChanged(bool p1, int val);
     void zoom(int zoomVal);
-    void pan(int leftRight, int forwardBack);
+    void pan(int leftRight, int upDown);
     ~MainWidget();
 
 protected:

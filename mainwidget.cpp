@@ -118,15 +118,17 @@ void MainWidget::zoom(int zoomVal) {
     update();
 }
 
-void MainWidget::pan(int leftRight, int forwardBack) {
+void MainWidget::pan(int leftRight, int upDown) {
     m_camTranslate.setX(m_camTranslate.x() + (leftRight * m_camTranslateFactor));
+    m_camTranslate.setY(m_camTranslate.y() + (upDown * m_camTranslateFactor));
     update();
 }
 
 void MainWidget::advanceSplitIncr() {
     for (int i = 0; i < m_numShapes; i++) {
-        m_shapes[i]->m_direction += m_shapes[i]->m_direction;
+        m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.1);
     }
+    update();
 }
 
 void MainWidget::deleteShapeResources() {
