@@ -40,6 +40,12 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
     else if (e->key() == Qt::Key_A) {
         ui->openGLWidget->pan(1,0);
     }
+    else if (e->key() == Qt::Key_W) {
+        ui->openGLWidget->pan(0,-1);
+    }
+    else if (e->key() == Qt::Key_S) {
+        ui->openGLWidget->pan(0,1);
+    }
 }
 
 

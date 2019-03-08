@@ -47,7 +47,6 @@ protected:
     int m_param1;
     int m_param2;
     //int m_numbInds;
-    int m_numVerts;
     int m_numTris;
     float m_radius;
     Triangle* m_triangles = NULL;
