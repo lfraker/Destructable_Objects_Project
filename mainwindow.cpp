@@ -6,8 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->tesselationOneSlider->setValue(10);
-    ui->tesselationTwoSlider->setValue(10);
+    ui->tesselationOneSlider->setValue(30);
+    ui->tesselationTwoSlider->setValue(30);
     exitDestruct();
 }
 
