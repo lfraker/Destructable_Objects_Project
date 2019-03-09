@@ -92,14 +92,41 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(lDist < 0){
                     tL.append(Triangle(tris[i].m_left, i1, i2));
-                    // TODO quick 4 point triangulation
-                    tR.append(Triangle(tris[i].m_right, i1, i2));
-                    tR.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
+                    if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i1) ||
+                       tris[i].m_right.distanceToPoint(i2) <= tris[i].m_top.distanceToPoint(i2)){
+                        tR.append(Triangle(tris[i].m_right, i1, i2));
+                        if(tris[i].m_top.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i2)){
+                            tR.append(Triangle(tris[i].m_right, tris[i].m_top, i1));
+                        }else{
+                            tR.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
+                        }
+                    }else{
+                        tR.append(Triangle(tris[i].m_top, i1, i2));
+                        if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i2)){
+                            tR.append(Triangle(tris[i].m_right, tris[i].m_top, i1));
+                        }else{
+                            tR.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
+                        }
+                    }
                 }
                 else{
                     tR.append(Triangle(tris[i].m_left, i1, i2));
-                    tL.append(Triangle(tris[i].m_right, i1, i2));
-                    tL.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
+                    if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i1) ||
+                       tris[i].m_right.distanceToPoint(i2) <= tris[i].m_top.distanceToPoint(i2)){
+                        tL.append(Triangle(tris[i].m_right, i1, i2));
+                        if(tris[i].m_top.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i2)){
+                            tL.append(Triangle(tris[i].m_right, tris[i].m_top, i1));
+                        }else{
+                            tL.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
+                        }
+                    }else{
+                        tL.append(Triangle(tris[i].m_top, i1, i2));
+                        if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i2)){
+                            tL.append(Triangle(tris[i].m_right, tris[i].m_top, i1));
+                        }else{
+                            tL.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
+                        }
+                    }
                 }
             }
             else if ((rDist < 0 && lDist >= 0 && tDist >= 0) || (rDist >= 0 && lDist < 0 && tDist < 0)){
@@ -109,13 +136,41 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(rDist < 0){
                     tL.append(Triangle(tris[i].m_right, i1, i2));
-                    tR.append(Triangle(tris[i].m_left, i1, i2));
-                    tR.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
+                    if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i1) ||
+                       tris[i].m_left.distanceToPoint(i2) <= tris[i].m_top.distanceToPoint(i2)){
+                        tR.append(Triangle(tris[i].m_left, i1, i2));
+                        if(tris[i].m_top.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i2)){
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_top, i1));
+                        }else{
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
+                        }
+                    }else{
+                        tR.append(Triangle(tris[i].m_top, i1, i2));
+                        if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_left.distanceToPoint(i2)){
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_top, i1));
+                        }else{
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
+                        }
+                    }
                 }
                 else{
                     tR.append(Triangle(tris[i].m_right, i1, i2));
-                    tL.append(Triangle(tris[i].m_left, i1, i2));
-                    tL.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
+                    if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i1) ||
+                       tris[i].m_left.distanceToPoint(i2) <= tris[i].m_top.distanceToPoint(i2)){
+                        tL.append(Triangle(tris[i].m_left, i1, i2));
+                        if(tris[i].m_top.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i2)){
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_top, i1));
+                        }else{
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
+                        }
+                    }else{
+                        tL.append(Triangle(tris[i].m_top, i1, i2));
+                        if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_left.distanceToPoint(i2)){
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_top, i1));
+                        }else{
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_top, i2));
+                        }
+                    }
                 }
 
             }
@@ -126,12 +181,40 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(tDist < 0){
                     tL.append(Triangle(tris[i].m_top, i1, i2));
-                    tR.append(Triangle(tris[i].m_right, i1, i2));
-                    tR.append(Triangle(tris[i].m_right, tris[i].m_left, i2));
+                    if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i1) ||
+                       tris[i].m_left.distanceToPoint(i2) <= tris[i].m_right.distanceToPoint(i2)){
+                        tR.append(Triangle(tris[i].m_left, i1, i2));
+                        if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i2)){
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_right, i1));
+                        }else{
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_right, i2));
+                        }
+                    }else{
+                        tR.append(Triangle(tris[i].m_right, i1, i2));
+                        if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_left.distanceToPoint(i2)){
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_right, i1));
+                        }else{
+                            tR.append(Triangle(tris[i].m_left, tris[i].m_right, i2));
+                        }
+                    }
                 }else{
                     tR.append(Triangle(tris[i].m_top, i1, i2));
-                    tL.append(Triangle(tris[i].m_right, i1, i2));
-                    tL.append(Triangle(tris[i].m_right, tris[i].m_left, i2));
+                    if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i1) ||
+                       tris[i].m_left.distanceToPoint(i2) <= tris[i].m_right.distanceToPoint(i2)){
+                        tL.append(Triangle(tris[i].m_left, i1, i2));
+                        if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i2)){
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_right, i1));
+                        }else{
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_right, i2));
+                        }
+                    }else{
+                        tL.append(Triangle(tris[i].m_right, i1, i2));
+                        if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_left.distanceToPoint(i2)){
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_right, i1));
+                        }else{
+                            tL.append(Triangle(tris[i].m_left, tris[i].m_right, i2));
+                        }
+                    }
                 }
             }
         }
