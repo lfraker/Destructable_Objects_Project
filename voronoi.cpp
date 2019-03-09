@@ -262,7 +262,6 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
     // Build triangulation in 2D
     QVector2D center = QVector2D(x/intersections.size(), y/intersections.size());
-    QVector2D center2 = QVector2D((maxX - minX)/2, (maxY - minY)/2);
 
     // Build triangles around center point
     // Translate the 2D triangulation back to 3D
@@ -273,7 +272,6 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     do
     {
         poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
-
         // search through points counter clockwise
         q = (p + 1) % intersections2d.size();
         for (int i = 0; i < intersections2d.size(); i++)
@@ -285,6 +283,8 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
         p = q;
     } while (p != leftMost);
+
+    poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
 
     for(int i = 0; i < poly.size() - 1; i++){
         QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
