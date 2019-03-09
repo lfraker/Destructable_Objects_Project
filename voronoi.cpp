@@ -288,8 +288,8 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
     for(int i = 0; i < poly.size() - 1; i++){
         QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
-        QVector4D p2 = mInv * QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
-        QVector4D p3 = mInv * QVector4D(center.x(), center.y(), 0, 1);
+        QVector4D p2 = QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
+        QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
         QVector3D l, r, t;
         // Orientation and create our new triangle
         if(p1.x() < p2.x() && p1.x() < p3.x()){
