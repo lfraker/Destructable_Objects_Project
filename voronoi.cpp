@@ -92,6 +92,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(lDist < 0){
                     tL.append(Triangle(tris[i].m_left, i1, i2));
+                    // TODO quick 4 point triangulation
                     tR.append(Triangle(tris[i].m_right, i1, i2));
                     tR.append(Triangle(tris[i].m_right, tris[i].m_top, i2));
                 }
@@ -203,9 +204,9 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     } while (p != leftMost);
 
     for(int i = 0; i < poly.size() - 1; i++){
-        QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
-        QVector4D p2 = QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
-        QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
+        QVector4D p1 = mInv * QVector4D(poly[i].x(), poly[i].y(), 0, 1);
+        QVector4D p2 = mInv * QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
+        QVector4D p3 = mInv * QVector4D(center.x(), center.y(), 0, 1);
         //triCleav.append(Triangle((mInv * p1).toVector3D(), (mInv * p2).toVector3D(), (mInv * p3).toVector3D()));
     }
 
@@ -229,7 +230,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     else{
         // recursively keep splitting!
         split(shapeL, shapes, origCtr, shapeCt/2);
-        split(shapeR, &shapes[shapeCt/2], origCtr, shapeCt/2);
+        split(shapeR, shapes + (shapeCt/2), origCtr, shapeCt/2);
     }
 }
 
