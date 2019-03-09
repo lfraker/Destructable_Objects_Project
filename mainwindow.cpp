@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->tesselationOneSlider->setValue(30);
     ui->tesselationTwoSlider->setValue(30);
+    ui->splitDepthLabel->setText(QString::number(ui->splitDepthSlider->value()));
     exitDestruct();
 }
 
@@ -17,7 +18,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_destructButton_clicked() {
-    ui->openGLWidget->destructObj();
+    ui->openGLWidget->destructObj(ui->splitDepthSlider->value());
     enterDestruct();
 }
 
@@ -68,16 +69,22 @@ void MainWindow::on_tesselationTwoSlider_valueChanged(int val) {
     exitDestruct();
 }
 
+void MainWindow::on_splitDepthSlider_valueChanged(int val) {
+    ui->splitDepthLabel->setText(QString::number(ui->splitDepthSlider->value()));
+}
+
 void MainWindow::enterDestruct() {
     ui->destructButton->setEnabled(false);
     ui->advanceSplitButton->setEnabled(true);
     ui->unpauseSplitButton->setEnabled(true);
+    ui->splitDepthSlider->setEnabled(false);
 }
 
 void MainWindow::exitDestruct() {
     ui->destructButton->setEnabled(true);
     ui->advanceSplitButton->setEnabled(false);
     ui->unpauseSplitButton->setEnabled(false);
+    ui->splitDepthSlider->setEnabled(true);
 }
 
 void MainWindow::on_tesselationOneSlider_valueChanged(int val) {

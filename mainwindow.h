@@ -30,6 +30,7 @@ private slots:
     void on_resetButton_clicked();
     void on_tesselationTwoSlider_valueChanged(int val);
     void on_tesselationOneSlider_valueChanged(int val);
+    void on_splitDepthSlider_valueChanged(int val);
     void on_cylinderSelect_clicked();
     void on_cubeSelect_clicked();
     void on_sphereSelect_clicked();

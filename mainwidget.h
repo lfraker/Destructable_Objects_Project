@@ -85,7 +85,7 @@ public:
 
     enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
-    void destructObj();
+    void destructObj(int depth);
     void pauseResumeSplit(bool pause);
     void advanceSplitIncr();
     void reset();

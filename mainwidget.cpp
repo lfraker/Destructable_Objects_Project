@@ -85,8 +85,7 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 }
 
 
-void MainWidget::destructObj() {
-    int depth = 5;
+void MainWidget::destructObj(int depth) {
     Shape ** temp_shapes = Voronoi::split(m_shapes[0], depth);
     deleteShapeResources();
     m_numShapes = static_cast<int>(pow(2, depth));
