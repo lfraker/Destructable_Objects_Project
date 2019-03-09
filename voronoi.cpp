@@ -287,10 +287,55 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     } while (p != leftMost);
 
     for(int i = 0; i < poly.size() - 1; i++){
-        QVector4D p1 = mInv * QVector4D(poly[i].x(), poly[i].y(), 0, 1);
+        QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
         QVector4D p2 = mInv * QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
         QVector4D p3 = mInv * QVector4D(center.x(), center.y(), 0, 1);
-        //triCleav.append(Triangle((mInv * p1).toVector3D(), (mInv * p2).toVector3D(), (mInv * p3).toVector3D()));
+        QVector3D l, r, t;
+        // Orientation and create our new triangle
+        if(p1.x() < p2.x() && p1.x() < p3.x()){
+            p1 = mInv * p1;
+            l = QVector3D(p1.x(), p1.y(), p1.z());
+            if(p2.x() > p3.x()){
+                p2 = mInv * p2;
+                r = QVector3D(p2.x(), p2.y(), p2.z());
+                p3 = mInv * p3;
+                t = QVector3D(p3.x(), p3.y(), p3.z());
+            }else{
+                p2 = mInv * p2;
+                t = QVector3D(p2.x(), p2.y(), p2.z());
+                p3 = mInv * p3;
+                r = QVector3D(p3.x(), p3.y(), p3.z());
+            }
+        }else if(p2.x() < p1.x() && p2.x() < p3.x()){
+            p2 = mInv * p2;
+            l = QVector3D(p2.x(), p2.y(), p2.z());
+            if(p1.x() > p3.x()){
+                p1 = mInv * p1;
+                r = QVector3D(p1.x(), p1.y(), p1.z());
+                p3 = mInv * p3;
+                t = QVector3D(p3.x(), p3.y(), p3.z());
+            }else{
+                p1 = mInv * p1;
+                t = QVector3D(p1.x(), p1.y(), p1.z());
+                p3 = mInv * p3;
+                r = QVector3D(p3.x(), p3.y(), p3.z());
+            }
+        }else{
+            p3 = mInv * p3;
+            l = QVector3D(p3.x(), p3.y(), p3.z());
+            if(p1.x() > p2.x()){
+                p1 = mInv * p1;
+                r = QVector3D(p1.x(), p1.y(), p1.z());
+                p2 = mInv * p2;
+                t = QVector3D(p2.x(), p2.y(), p2.z());
+            }else{
+                p1 = mInv * p1;
+                t = QVector3D(p1.x(), p1.y(), p1.z());
+                p2 = mInv * p2;
+                r = QVector3D(p2.x(), p2.y(), p2.z());
+            }
+        }
+        triCleav.append(Triangle(l, r, t));
     }
 
     // Add all the triangles to both shapes
