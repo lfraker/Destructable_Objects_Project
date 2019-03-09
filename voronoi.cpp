@@ -265,82 +265,84 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
     // Build triangles around center point
     // Translate the 2D triangulation back to 3D
-    QVarLengthArray<Triangle> triCleav;
-    QVarLengthArray<QVector2D> poly;
-    int p = leftMost;
-    int q;
-    do
-    {
-        poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
-        // search through points counter clockwise
-        q = (p + 1) % intersections2d.size();
-        for (int i = 0; i < intersections2d.size(); i++)
+    if(intersections2d.size() > 0){
+        QVarLengthArray<Triangle> triCleav;
+        QVarLengthArray<QVector2D> poly;
+        int p = leftMost;
+        int q;
+        do
         {
-           if (orientation(intersections2d[p], intersections2d[i], intersections2d[q]) == 2){
-               q = i;
-           }
+            poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
+            // search through points counter clockwise
+            q = (p + 1) % intersections2d.size();
+            for (int i = 0; i < intersections2d.size(); i++)
+            {
+               if (orientation(intersections2d[p], intersections2d[i], intersections2d[q]) == 2){
+                   q = i;
+               }
+            }
+
+            p = q;
+        } while (p != leftMost);
+        poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
+
+        for(int i = 0; i < poly.size() - 1; i++){
+            QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
+            QVector4D p2 = QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
+            QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
+            QVector3D l, r, t;
+            // Orient and create our new triangle
+            if(p1.x() < p2.x() && p1.x() < p3.x()){
+                p1 = mInv * p1;
+                l = QVector3D(p1.x(), p1.y(), p1.z());
+                if(p2.x() > p3.x()){
+                    p2 = mInv * p2;
+                    r = QVector3D(p2.x(), p2.y(), p2.z());
+                    p3 = mInv * p3;
+                    t = QVector3D(p3.x(), p3.y(), p3.z());
+                }else{
+                    p2 = mInv * p2;
+                    t = QVector3D(p2.x(), p2.y(), p2.z());
+                    p3 = mInv * p3;
+                    r = QVector3D(p3.x(), p3.y(), p3.z());
+                }
+            }else if(p2.x() < p1.x() && p2.x() < p3.x()){
+                p2 = mInv * p2;
+                l = QVector3D(p2.x(), p2.y(), p2.z());
+                if(p1.x() > p3.x()){
+                    p1 = mInv * p1;
+                    r = QVector3D(p1.x(), p1.y(), p1.z());
+                    p3 = mInv * p3;
+                    t = QVector3D(p3.x(), p3.y(), p3.z());
+                }else{
+                    p1 = mInv * p1;
+                    t = QVector3D(p1.x(), p1.y(), p1.z());
+                    p3 = mInv * p3;
+                    r = QVector3D(p3.x(), p3.y(), p3.z());
+                }
+            }else{
+                p3 = mInv * p3;
+                l = QVector3D(p3.x(), p3.y(), p3.z());
+                if(p1.x() > p2.x()){
+                    p1 = mInv * p1;
+                    r = QVector3D(p1.x(), p1.y(), p1.z());
+                    p2 = mInv * p2;
+                    t = QVector3D(p2.x(), p2.y(), p2.z());
+                }else{
+                    p1 = mInv * p1;
+                    t = QVector3D(p1.x(), p1.y(), p1.z());
+                    p2 = mInv * p2;
+                    r = QVector3D(p2.x(), p2.y(), p2.z());
+                }
+            }
+            triCleav.append(Triangle(l, r, t));
         }
 
-        p = q;
-    } while (p != leftMost);
-    poly.append(QVector2D(intersections2d[p].x(), intersections2d[p].y()));
-
-    for(int i = 0; i < poly.size() - 1; i++){
-        QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
-        QVector4D p2 = QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
-        QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
-        QVector3D l, r, t;
-        // Orient and create our new triangle
-        if(p1.x() < p2.x() && p1.x() < p3.x()){
-            p1 = mInv * p1;
-            l = QVector3D(p1.x(), p1.y(), p1.z());
-            if(p2.x() > p3.x()){
-                p2 = mInv * p2;
-                r = QVector3D(p2.x(), p2.y(), p2.z());
-                p3 = mInv * p3;
-                t = QVector3D(p3.x(), p3.y(), p3.z());
-            }else{
-                p2 = mInv * p2;
-                t = QVector3D(p2.x(), p2.y(), p2.z());
-                p3 = mInv * p3;
-                r = QVector3D(p3.x(), p3.y(), p3.z());
-            }
-        }else if(p2.x() < p1.x() && p2.x() < p3.x()){
-            p2 = mInv * p2;
-            l = QVector3D(p2.x(), p2.y(), p2.z());
-            if(p1.x() > p3.x()){
-                p1 = mInv * p1;
-                r = QVector3D(p1.x(), p1.y(), p1.z());
-                p3 = mInv * p3;
-                t = QVector3D(p3.x(), p3.y(), p3.z());
-            }else{
-                p1 = mInv * p1;
-                t = QVector3D(p1.x(), p1.y(), p1.z());
-                p3 = mInv * p3;
-                r = QVector3D(p3.x(), p3.y(), p3.z());
-            }
-        }else{
-            p3 = mInv * p3;
-            l = QVector3D(p3.x(), p3.y(), p3.z());
-            if(p1.x() > p2.x()){
-                p1 = mInv * p1;
-                r = QVector3D(p1.x(), p1.y(), p1.z());
-                p2 = mInv * p2;
-                t = QVector3D(p2.x(), p2.y(), p2.z());
-            }else{
-                p1 = mInv * p1;
-                t = QVector3D(p1.x(), p1.y(), p1.z());
-                p2 = mInv * p2;
-                r = QVector3D(p2.x(), p2.y(), p2.z());
-            }
+        // Add all the triangles to both shapes
+        for(int i = 0; i < triCleav.size(); i++){
+            tL.append(triCleav[i]);
+            tR.append(triCleav[i]);
         }
-        triCleav.append(Triangle(l, r, t));
-    }
-
-    // Add all the triangles to both shapes
-    for(int i = 0; i < triCleav.size(); i++){
-        tL.append(triCleav[i]);
-        tR.append(triCleav[i]);
     }
 
     Shape* shapeL = new Shape(tL.data(), tL.size());

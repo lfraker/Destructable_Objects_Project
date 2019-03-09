@@ -38,6 +38,7 @@ QVector3D* Shape::getVecs() {
 }
 
 QVector3D Shape::getCenter(){
+    if(this->numVertices() == 0) return QVector3D(0, 0, 0);
     float x = 0;
     float y = 0;
     float z = 0;
