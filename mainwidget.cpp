@@ -269,6 +269,13 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
+    if (!m_pauseSplit) {
+        for (int i = 0; i < m_numShapes; i++) {
+            m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.01);
+        }
+        update();
+    }
 }
 
 
@@ -356,11 +363,6 @@ void MainWidget::resizeGL(int w, int h)
 
 void MainWidget::paintGL()
 {
-    if (!m_pauseSplit) {
-        for (int i = 0; i < m_numShapes; i++) {
-            m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.001);
-        }
-    }
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
