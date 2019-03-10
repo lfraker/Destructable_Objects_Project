@@ -84,10 +84,8 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
             if((lDist < 0 && rDist >= 0 && tDist >= 0) || (lDist >= 0 && rDist < 0 && tDist < 0)){
                 QVector3D i1 = intersection(bisectingPlane, tris[i].m_left, tris[i].m_right);
                 QVector3D i2 = intersection(bisectingPlane, tris[i].m_left, tris[i].m_top);
-                qDebug("1distance to plane: %f", i1.distanceToPlane(a, b, c));
-                qDebug("1distance to plane: %f", i2.distanceToPlane(a, b, c));
-                if(qFuzzyCompare(i1.distanceToPlane(a, b, c), 0)){ intersections.append(QVector3D(i1.x(), i1.y(), i1.z())); }
-                if(qFuzzyCompare(i2.distanceToPlane(a, b, c), 0)){ intersections.append(QVector3D(i2.x(), i2.y(), i2.z())); }
+                intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
+                intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
                 if(lDist < 0){
                     tL.append(Triangle(tris[i].m_left, i1, i2));
                     if(tris[i].m_right.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i1) ||
@@ -132,8 +130,6 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 QVector3D i2 = intersection(bisectingPlane, tris[i].m_right, tris[i].m_top);
                 intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
-                qDebug("2distance to plane: %f", i1.distanceToPlane(a, b, c));
-                qDebug("2distance to plane: %f", i2.distanceToPlane(a, b, c));
                 if(rDist < 0){
                     tL.append(Triangle(i1, tris[i].m_right, i2));
                     if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_top.distanceToPoint(i1) ||
@@ -179,8 +175,6 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 QVector3D i2 = intersection(bisectingPlane, tris[i].m_top, tris[i].m_right);
                 intersections.append(QVector3D(i1.x(), i1.y(), i1.z()));
                 intersections.append(QVector3D(i2.x(), i2.y(), i2.z()));
-                qDebug("3distance to plane: %f", i1.distanceToPlane(a, b, c));
-                qDebug("3distance to plane: %f", i2.distanceToPlane(a, b, c));
                 if(tDist < 0){
                     tL.append(Triangle(i1, i2, tris[i].m_top));
                     if(tris[i].m_left.distanceToPoint(i1) <= tris[i].m_right.distanceToPoint(i1) ||
@@ -229,7 +223,6 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     QVector3D n = QVector3D::crossProduct(ab, ac);
     n.normalize();
     ab.normalize();
-    //QVector3D v = QVector3D::crossProduct(ab, n); // TODO not needed I don't think?
     QMatrix4x4 d = QMatrix4x4(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1 ,1);
     QMatrix4x4 s = QMatrix4x4(a.x(), a.x() + ab.x(), a.x() + n.x(), a.x() + n.x(),
                               a.y(), a.y() + ab.y(), a.y() + n.y(), a.y() + n.y(),

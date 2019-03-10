@@ -377,7 +377,7 @@ void MainWidget::paintGL()
         matrix.translate(m_camTranslate);
         matrix.scale(m_camZoom);
         matrix.rotate(m_camRotation);
-        matrix.translate(m_shapes[i]->m_direction);
+        matrix.translate(m_shapes[i]->m_direction * 0.1f);
 
         // Set modelview-projection matrix
         m_program.setUniformValue("mvp_matrix", projection * matrix);
