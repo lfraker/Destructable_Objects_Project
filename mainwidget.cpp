@@ -74,7 +74,7 @@ MainWidget::~MainWidget()
     makeCurrent();
     delete texture;
     //delete geometries;
-    delete m_shape;
+    delete m_shape; // TODO occasional segfault here
     doneCurrent();
 }
 

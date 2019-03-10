@@ -227,7 +227,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     QVector3D n = QVector3D::crossProduct(ab, ac);
     n.normalize();
     ab.normalize();
-    //QVector3D v = QVector3D::crossProduct(ab, n); // TODO not needed I don't think
+    //QVector3D v = QVector3D::crossProduct(ab, n); // TODO not needed I don't think?
     QMatrix4x4 d = QMatrix4x4(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1 ,1);
     QMatrix4x4 s = QMatrix4x4(a.x(), a.x() + ab.x(), a.x() + n.x(), a.x() + n.x(),
                               a.y(), a.y() + ab.y(), a.y() + n.y(), a.y() + n.y(),
@@ -238,6 +238,12 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     m = m.transposed();
     QMatrix4x4 mInv = m.inverted();
 
+    QVector3D test = intersections[0];
+    qDebug("test point before: %f, %f, %f", test.x(), test.y(), test.z());
+    QVector4D test2 = m * QVector4D(test.x(), test.y(), test.z(), 1);
+    qDebug("test point 2d: %f, %f, %f", test2.x(), test2.y(), test2.z());
+    test = QVector3D((mInv * test2).x(), (mInv * test2).y(), (mInv * test2).z());
+    qDebug("test point after: %f, %f, %f", test.x(), test.y(), test.z());
 
     // Convert 3D points on plane to 2D for triangulation
     float minX = std::numeric_limits<float>::max();
@@ -358,7 +364,9 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     }
     else{
         // recursively keep splitting!
+        qDebug("split1 %i", shapeCt/2);
         split(shapeL, shapes, origCtr, shapeCt/2);
+        qDebug("split2 %i", shapeCt/2);
         split(shapeR, shapes + (shapeCt/2), origCtr, shapeCt/2);
     }
 }
