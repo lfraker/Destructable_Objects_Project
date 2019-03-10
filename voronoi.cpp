@@ -255,8 +255,10 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
     int leftMost = -1;
     QVarLengthArray<QVector2D> intersections2d;
     for(int i = 0; i < intersections.size(); i++){
+        qDebug("3d: %f, %f, %f", intersections[i].x(), intersections[i].y(), intersections[i].z());
         QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
         QVector4D p2 = m * p;
+        qDebug("2d: %f, %f, %f", p2.x(), p2.y(), p2.z());
         intersections2d.append(QVector2D(p2.x(), p2.y()));
         if(p2.x() < minX) { minX = p2.x(); leftMost = i; }
         if(p2.y() < minY) minY = p2.y();
