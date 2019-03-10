@@ -26,7 +26,7 @@ public:
     Triangle* getTris();
 
     //void setParams(); // Set settings parameters and call Compute Triangle
-    void setDirection(QVector3D);
+    void setDirectionCenter(QVector3D, QVector3D);
     void setTriangles(Triangle*);
     //void addVertNorm(glm::vec3 vert, glm::vec3 norm); // Adds a vertex and a normal to the array
 
@@ -38,6 +38,8 @@ public:
     void deleteVertexCache();
 
     QVector3D m_direction = QVector3D(0.0, 0.0, 0.0);
+    QVector3D m_translate = QVector3D(0.0, 0.0, 0.0);
+    QVector3D m_startCenter = QVector3D(0.0, 0.0, 0.0);
 
 
 protected:

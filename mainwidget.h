@@ -88,6 +88,8 @@ public:
     void destructObj(int depth);
     void pauseResumeSplit(bool pause);
     void advanceSplitIncr();
+    void pauseResumeJoin(bool pause);
+    void advanceJoinIncr();
     void reset();
     void changeShapeType(ShapeType newType);
     void sliderChanged(bool p1, int val);
@@ -145,6 +147,8 @@ private:
     QOpenGLBuffer ** m_positionBuffers = NULL;
     TransformDetails * m_transforms = NULL;
     bool m_pauseSplit = true;
+    bool m_pauseJoin = true;
+
 };
 
 #endif // MAINWIDGET_H
