@@ -2,7 +2,6 @@
 
 #define PI 3.14159265
 
-
 Cone::Cone(int p1, int p2, int radius)
     : Shape(p1, p2)
 {

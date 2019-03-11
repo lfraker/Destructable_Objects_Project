@@ -1,18 +1,30 @@
 #include "shapes/Shape.h"
+#include "shapes/Triangle.h"
+#include <limits>
 
 Shape::Shape(int p1, int p2)
 {
     m_param1 = p1;
     m_param2 = p2;
+    m_destructShape = false;
 }
 
+Shape::Shape(Triangle* t, int length)
+{
+    m_numTris = length;
+    this->setTriangles(t);
+    m_destructShape = true;
+}
 
 int Shape::numVertices() {
     return m_numTris * 3;
 }
 
+int Shape::numTris() {
+    return m_numTris;
+}
 void Shape::genVecs() {
-    m_vertices = new QVector3D[numVertices()];
+    m_vertices = new QVector3D[this->numVertices()];
     int vertCtr = 0;
 
     for (int i = 0; i < m_numTris; i++) {
@@ -25,22 +37,44 @@ QVector3D* Shape::getVecs() {
     return m_vertices;
 }
 
+QVector3D Shape::getCenter(){
+    if(this->numVertices() == 0) return QVector3D(0, 0, 0);
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    for(int i = 0; i < this->numVertices(); i++){
+        x += m_vertices[i].x();
+        y += m_vertices[i].y();
+        z += m_vertices[i].z();
+    }
+    return QVector3D((x)/this->numVertices(), (y)/this->numVertices(), (z)/this->numVertices());
+}
 
-Shape::Triangle* Shape::getTris() {
+Triangle* Shape::getTris() {
     return m_triangles;
 }
 
+void Shape::setDirectionCenter(QVector3D direc, QVector3D cent) {
+    m_direction = direc.normalized();
+    m_startCenter = cent;
+    m_translate = m_direction * 0.1f;
+}
+
+void Shape::setTriangles(Triangle* t)
+{
+    //m_numTris = sizeof(t) / sizeof (*t);
+    m_triangles = t;
+    genVecs();
+}
 
 Shape::~Shape() {
-    if (m_triangles != NULL) {
+    if (m_triangles != NULL && !m_destructShape) {
         delete [] m_triangles;
+        m_triangles = NULL;
     }
-
-    m_triangles = NULL;
 
     if (m_vertices != NULL) {
         delete [] m_vertices;
+        m_vertices = NULL;
     }
-
-    m_vertices = NULL;
 }

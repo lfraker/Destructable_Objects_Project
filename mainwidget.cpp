@@ -74,7 +74,7 @@ MainWidget::~MainWidget()
     makeCurrent();
     delete texture;
     //delete geometries;
-    delete m_shape;
+    delete m_shape; // TODO occasional segfault here
     doneCurrent();
 }
 
@@ -85,9 +85,13 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 }
 
 
-void MainWidget::destructObj() {
-    // TODO Trigger destruction here (expect to get back # of shapes, instance of shapes, and direction of movement for each shape
-
+void MainWidget::destructObj(int depth) {
+    Shape ** temp_shapes = Voronoi::split(m_shapes[0], depth);
+    deleteShapeResources();
+    m_numShapes = static_cast<int>(pow(2, depth));
+    m_shapes = temp_shapes;
+    resetGl();
+    update();
 }
 
 void MainWidget::reset() {
@@ -112,8 +116,30 @@ void MainWidget::zoom(int zoomVal) {
     update();
 }
 
-void MainWidget::pan(int leftRight, int forwardBack) {
+void MainWidget::pan(int leftRight, int upDown) {
     m_camTranslate.setX(m_camTranslate.x() + (leftRight * m_camTranslateFactor));
+    m_camTranslate.setY(m_camTranslate.y() + (upDown * m_camTranslateFactor));
+    update();
+}
+
+void MainWidget::advanceSplitIncr() {
+    for (int i = 0; i < m_numShapes; i++) {
+        m_shapes[i]->m_translate += (m_shapes[i]->m_direction * 0.1f);
+    }
+    update();
+}
+
+void MainWidget::pauseResumeJoin(bool pause) {
+    m_pauseJoin = pause;
+//    for (int i = 0; i < m_numShapes; i++) {
+//        m_shapes[i]->m_translate = m_shapes[i]->m_direction;
+//    }
+}
+
+void MainWidget::advanceJoinIncr() {
+    for (int i = 0; i < m_numShapes; i++) {
+        m_shapes[i]->m_translate += (m_shapes[i]->m_direction * -0.1f);
+    }
     update();
 }
 
@@ -153,9 +179,16 @@ void MainWidget::deleteShapeResources() {
     m_transforms = NULL;
 }
 
+void MainWidget::pauseResumeSplit(bool pause) {
+    m_pauseSplit = pause;
+//    for (int i = 0; i < m_numShapes; i++) {
+//        m_shapes[i]->m_translate = m_shapes[i]->m_direction;
+//    }
+}
+
+
 void MainWidget::refreshShape() {
     deleteShapeResources();
-
     Shape * temp_shape;
     switch (m_shapeType) {
         case SphereType:
@@ -253,17 +286,28 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
+    if (!m_pauseSplit) {
+        for (int i = 0; i < m_numShapes; i++) {
+            m_shapes[i]->m_translate += (m_shapes[i]->m_translate * 0.01);
+        }
+        update();
+    }
+
+    if (!m_pauseJoin) {
+        for (int i = 0; i < m_numShapes; i++) {
+//            float distToStartPre = m_shapes[i]->m_startCenter.distanceToPoint(m_shapes[i]->m_translate);
+//            float distToStartPost = m_shapes[i]->m_startCenter.distanceToPoint(m_shapes[i]->m_translate + (m_shapes[i]->m_direction * -0.01));
+//            if (distToStartPre > distToStartPost) {
+//                m_shapes[i]->m_translate += (m_shapes[i]->m_direction * -0.01);
+//            }
+            m_shapes[i]->m_translate += (m_shapes[i]->m_translate * -0.01);
+
+        }
+        update();
+    }
 }
 
-void MainWidget::generateDestructionLists(bool destruct) {
-    // Plaseholder code - add in voronoi collision code
-    if (destruct) {
-
-    }
-    else {
-
-    }
-}
 
 void MainWidget::initializeGL()
 {
@@ -280,6 +324,9 @@ void MainWidget::initializeGL()
     // Enable back face culling
     glEnable(GL_CULL_FACE);
 
+    // Enable point size adjustment
+    //glEnable(GL_PROGRAM_POINT_SIZE);
+
     refreshShape();
 
     // Repeat for buffers of normals, texture coordinates,
@@ -293,6 +340,9 @@ void MainWidget::initializeGL()
 
 void MainWidget::initShaders()
 {
+    // Init point size
+    //glPointSize(10);
+
     // Compile vertex shader
     if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
         close();
@@ -343,6 +393,7 @@ void MainWidget::resizeGL(int w, int h)
 
 void MainWidget::paintGL()
 {
+
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     this->makeCurrent();
@@ -354,9 +405,9 @@ void MainWidget::paintGL()
         QMatrix4x4 matrix;
         matrix.translate(0.0, 0.0, -10.0);
         matrix.translate(m_camTranslate);
-        matrix.translate(m_transforms[i].m_shapeTranslate);
-        matrix.rotate(m_camRotation);
         matrix.scale(m_camZoom);
+        matrix.rotate(m_camRotation);
+        matrix.translate(m_shapes[i]->m_translate);
 
         // Set modelview-projection matrix
         m_program.setUniformValue("mvp_matrix", projection * matrix);
@@ -371,6 +422,10 @@ void MainWidget::paintGL()
         int color = m_program.attributeLocation("color");
         m_program.setAttributeValue(color, 1.0f);
         glDrawArrays(GL_TRIANGLES, 0, m_shapes[i]->numVertices());
+
+        //int points_count = 2;
+        //QVector3D * points = Voronoi::generatePoints(m_shapes[i]->getTris(), 2);
+        //glDrawArrays(GL_POINTS, 0, 2);
 
         m_program.setAttributeValue(color, 0.0f);
         glDrawArrays(GL_LINES, 0, m_shapes[i]->numVertices());

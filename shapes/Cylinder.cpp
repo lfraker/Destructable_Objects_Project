@@ -13,7 +13,6 @@ Cylinder::Cylinder(int p1, int p2, int radius)
 Cylinder::~Cylinder()
 {
 
-
 }
 
 void Cylinder::computeTriangles()

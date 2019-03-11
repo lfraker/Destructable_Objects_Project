@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     shapes/Cube.cpp \
     shapes/Cone.cpp \
     shapes/Cylinder.cpp \
-    shapes/Shape.cpp
+    shapes/Shape.cpp \
+    voronoi.cpp
 
 SOURCES += \
     mainwidget.cpp
@@ -21,7 +22,10 @@ HEADERS += \
     shapes/Sphere.h \
     shapes/Cube.h \
     shapes/Cone.h \
-    shapes/Cylinder.h
+    shapes/Cylinder.h \
+    voronoi.h \
+    shapes/Torus.h \
+    shapes/Triangle.h
 
 RESOURCES += \
     shaders.qrc \
@@ -30,7 +34,6 @@ RESOURCES += \
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/opengl/cube
 INSTALLS += target
-
 
 
 ##-------------------------------------------------

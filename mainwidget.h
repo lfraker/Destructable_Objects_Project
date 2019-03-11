@@ -68,6 +68,7 @@
 #include <shapes/Cylinder.h>
 #include <shapes/Cone.h>
 #include <shapes/Sphere.h>
+#include "voronoi.h"
 
 //class GeometryEngine;
 
@@ -84,12 +85,16 @@ public:
 
     enum ShapeType { SphereType, CylinderType, ConeType, CubeType};
     explicit MainWidget(QWidget *parent = 0);
-    void destructObj();
+    void destructObj(int depth);
+    void pauseResumeSplit(bool pause);
+    void advanceSplitIncr();
+    void pauseResumeJoin(bool pause);
+    void advanceJoinIncr();
     void reset();
     void changeShapeType(ShapeType newType);
     void sliderChanged(bool p1, int val);
     void zoom(int zoomVal);
-    void pan(int leftRight, int forwardBack);
+    void pan(int leftRight, int upDown);
     ~MainWidget();
 
 protected:
@@ -101,8 +106,6 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-
-    void generateDestructionLists(bool destruct);
 
     void deleteShapeResources();
 
@@ -143,6 +146,9 @@ private:
     QOpenGLVertexArrayObject ** m_vaos = NULL;
     QOpenGLBuffer ** m_positionBuffers = NULL;
     TransformDetails * m_transforms = NULL;
+    bool m_pauseSplit = true;
+    bool m_pauseJoin = true;
+
 };
 
 #endif // MAINWIDGET_H
