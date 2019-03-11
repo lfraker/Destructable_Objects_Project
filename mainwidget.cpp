@@ -124,7 +124,7 @@ void MainWidget::pan(int leftRight, int upDown) {
 
 void MainWidget::advanceSplitIncr() {
     for (int i = 0; i < m_numShapes; i++) {
-        m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.1);
+        m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.1f);
     }
     update();
 }
