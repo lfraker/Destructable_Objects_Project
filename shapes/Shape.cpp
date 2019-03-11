@@ -54,8 +54,10 @@ Triangle* Shape::getTris() {
     return m_triangles;
 }
 
-void Shape::setDirection(QVector3D v) {
-    m_direction = v;
+void Shape::setDirectionCenter(QVector3D direc, QVector3D cent) {
+    m_direction = direc.normalized();
+    m_startCenter = cent;
+    m_translate = m_direction * 0.1f;
 }
 
 void Shape::setTriangles(Triangle* t)

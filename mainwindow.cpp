@@ -61,7 +61,32 @@ void MainWindow::on_unpauseSplitButton_clicked() {
         ui->unpauseSplitButton->setText("Pause Split");
     }
 
+    ui->unpauseJoinButton->setText("Resume Join");
+    m_joinPaused = true;
+    ui->openGLWidget->pauseResumeJoin(m_joinPaused);
+
     ui->openGLWidget->pauseResumeSplit(m_splitPaused);
+
+}
+
+void MainWindow::on_advanceJoinButton_clicked() {
+    ui->openGLWidget->advanceJoinIncr();
+}
+
+void MainWindow::on_unpauseJoinButton_clicked() {
+    m_joinPaused = !m_joinPaused;
+    if (m_joinPaused) {
+        ui->unpauseJoinButton->setText("Resume Join");
+    }
+    else {
+        ui->unpauseJoinButton->setText("Pause Join");
+    }
+
+    ui->unpauseSplitButton->setText("Resume Split");
+    m_splitPaused = true;
+    ui->openGLWidget->pauseResumeSplit(m_splitPaused);
+
+    ui->openGLWidget->pauseResumeJoin(m_joinPaused);
 }
 
 void MainWindow::on_tesselationTwoSlider_valueChanged(int val) {
@@ -78,6 +103,8 @@ void MainWindow::enterDestruct() {
     ui->advanceSplitButton->setEnabled(true);
     ui->unpauseSplitButton->setEnabled(true);
     ui->splitDepthSlider->setEnabled(false);
+    ui->unpauseJoinButton->setEnabled(true);
+    ui->advanceJoinButton->setEnabled(true);
 }
 
 void MainWindow::exitDestruct() {
@@ -85,6 +112,14 @@ void MainWindow::exitDestruct() {
     ui->advanceSplitButton->setEnabled(false);
     ui->unpauseSplitButton->setEnabled(false);
     ui->splitDepthSlider->setEnabled(true);
+    ui->unpauseJoinButton->setEnabled(false);
+    ui->advanceJoinButton->setEnabled(false);
+    m_joinPaused = true;
+    m_splitPaused = true;
+    ui->unpauseJoinButton->setText("Resume Join");
+    ui->unpauseSplitButton->setText("Resume Split");
+    ui->openGLWidget->pauseResumeSplit(m_splitPaused);
+    ui->openGLWidget->pauseResumeJoin(m_joinPaused);
 }
 
 void MainWindow::on_tesselationOneSlider_valueChanged(int val) {

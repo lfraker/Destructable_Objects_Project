@@ -356,8 +356,10 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
     if(shapeCt == 2){
         // add direction and put the shapes in the array
-        shapeL->setDirection(shapeL->getCenter() - origCtr);
-        shapeR->setDirection(shapeR->getCenter() - origCtr);
+        QVector3D centL = shapeL->getCenter();
+        QVector3D centR = shapeR->getCenter();
+        shapeL->setDirectionCenter(centL - origCtr, centL);
+        shapeR->setDirectionCenter(centR - origCtr, centR);
         shapes[0] = shapeL;
         shapes[1] = shapeR;
         return;

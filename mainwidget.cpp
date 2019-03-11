@@ -124,7 +124,21 @@ void MainWidget::pan(int leftRight, int upDown) {
 
 void MainWidget::advanceSplitIncr() {
     for (int i = 0; i < m_numShapes; i++) {
-        m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.1f);
+        m_shapes[i]->m_translate += (m_shapes[i]->m_direction * 0.1f);
+    }
+    update();
+}
+
+void MainWidget::pauseResumeJoin(bool pause) {
+    m_pauseJoin = pause;
+//    for (int i = 0; i < m_numShapes; i++) {
+//        m_shapes[i]->m_translate = m_shapes[i]->m_direction;
+//    }
+}
+
+void MainWidget::advanceJoinIncr() {
+    for (int i = 0; i < m_numShapes; i++) {
+        m_shapes[i]->m_translate += (m_shapes[i]->m_direction * -0.1f);
     }
     update();
 }
@@ -167,6 +181,9 @@ void MainWidget::deleteShapeResources() {
 
 void MainWidget::pauseResumeSplit(bool pause) {
     m_pauseSplit = pause;
+//    for (int i = 0; i < m_numShapes; i++) {
+//        m_shapes[i]->m_translate = m_shapes[i]->m_direction;
+//    }
 }
 
 
@@ -272,7 +289,20 @@ void MainWidget::timerEvent(QTimerEvent *)
 
     if (!m_pauseSplit) {
         for (int i = 0; i < m_numShapes; i++) {
-            m_shapes[i]->m_direction += (m_shapes[i]->m_direction * 0.01);
+            m_shapes[i]->m_translate += (m_shapes[i]->m_translate * 0.01);
+        }
+        update();
+    }
+
+    if (!m_pauseJoin) {
+        for (int i = 0; i < m_numShapes; i++) {
+//            float distToStartPre = m_shapes[i]->m_startCenter.distanceToPoint(m_shapes[i]->m_translate);
+//            float distToStartPost = m_shapes[i]->m_startCenter.distanceToPoint(m_shapes[i]->m_translate + (m_shapes[i]->m_direction * -0.01));
+//            if (distToStartPre > distToStartPost) {
+//                m_shapes[i]->m_translate += (m_shapes[i]->m_direction * -0.01);
+//            }
+            m_shapes[i]->m_translate += (m_shapes[i]->m_translate * -0.01);
+
         }
         update();
     }
@@ -377,7 +407,7 @@ void MainWidget::paintGL()
         matrix.translate(m_camTranslate);
         matrix.scale(m_camZoom);
         matrix.rotate(m_camRotation);
-        matrix.translate(m_shapes[i]->m_direction * 0.1f);
+        matrix.translate(m_shapes[i]->m_translate);
 
         // Set modelview-projection matrix
         m_program.setUniformValue("mvp_matrix", projection * matrix);

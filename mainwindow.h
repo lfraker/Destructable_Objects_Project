@@ -20,6 +20,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent*e) override;
     bool m_splitPaused = true;
+    bool m_joinPaused = true;
 
     void enterDestruct();
     void exitDestruct();
@@ -36,7 +37,8 @@ private slots:
     void on_sphereSelect_clicked();
     void on_coneSelect_clicked();
     void on_unpauseSplitButton_clicked();
-
+    void on_advanceJoinButton_clicked();
+    void on_unpauseJoinButton_clicked();
 
 private:
     Ui::MainWindow *ui;
