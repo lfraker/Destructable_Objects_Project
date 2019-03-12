@@ -95,6 +95,7 @@ public:
     void sliderChanged(bool p1, int val);
     void zoom(int zoomVal);
     void pan(int leftRight, int upDown);
+    void triggerRenderLines(bool renderLines);
     ~MainWidget();
 
 protected:
@@ -148,6 +149,7 @@ private:
     TransformDetails * m_transforms = NULL;
     bool m_pauseSplit = true;
     bool m_pauseJoin = true;
+    bool m_renderLines = true;
 
 };
 

@@ -8,10 +8,10 @@ uniform mat4 mvp_matrix;
 
 attribute vec4 a_position;
 attribute vec2 a_texcoord;
-attribute float color;
+attribute vec3 color;
 
 varying vec2 v_texcoord;
-varying float colr;
+varying vec3 colr;
 
 void main()
 {

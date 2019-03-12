@@ -36,6 +36,9 @@
     <property name="minimum">
      <number>3</number>
     </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
     <property name="value">
      <number>10</number>
     </property>
@@ -120,6 +123,9 @@
     <property name="minimum">
      <number>3</number>
     </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
     <property name="value">
      <number>10</number>
     </property>
@@ -163,7 +169,7 @@
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>400</y>
+      <y>410</y>
       <width>114</width>
       <height>32</height>
      </rect>
@@ -295,6 +301,19 @@
     </property>
     <property name="text">
      <string>Advance Join</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="renderLinesButton">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>380</y>
+      <width>114</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lines On</string>
     </property>
    </widget>
   </widget>

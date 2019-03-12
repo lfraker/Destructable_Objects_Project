@@ -98,6 +98,17 @@ void MainWindow::on_splitDepthSlider_valueChanged(int val) {
     ui->splitDepthLabel->setText(QString::number(ui->splitDepthSlider->value()));
 }
 
+void MainWindow::on_renderLinesButton_clicked() {
+    m_linesRender = !m_linesRender;
+    ui->openGLWidget->triggerRenderLines(m_linesRender);
+    if (m_linesRender) {
+        ui->renderLinesButton->setText("Lines On");
+    }
+    else {
+        ui->renderLinesButton->setText("Lines Off");
+    }
+}
+
 void MainWindow::enterDestruct() {
     ui->destructButton->setEnabled(false);
     ui->advanceSplitButton->setEnabled(true);

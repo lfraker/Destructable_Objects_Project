@@ -84,6 +84,11 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
     mousePressPosition = QVector2D(e->localPos());
 }
 
+void MainWidget::triggerRenderLines(bool renderLines) {
+    m_renderLines = renderLines;
+    update();
+}
+
 
 void MainWidget::destructObj(int depth) {
     Shape ** temp_shapes = Voronoi::split(m_shapes[0], depth);
@@ -420,15 +425,16 @@ void MainWidget::paintGL()
         m_vaos[i]->bind();
         m_positionBuffers[i]->bind();
         int color = m_program.attributeLocation("color");
-        m_program.setAttributeValue(color, 1.0f);
+        m_program.setAttributeValue(color, QVector3D(1.0, 1.0, 1.0));
         glDrawArrays(GL_TRIANGLES, 0, m_shapes[i]->numVertices());
 
         //int points_count = 2;
         //QVector3D * points = Voronoi::generatePoints(m_shapes[i]->getTris(), 2);
         //glDrawArrays(GL_POINTS, 0, 2);
-
-        m_program.setAttributeValue(color, 0.0f);
-        glDrawArrays(GL_LINES, 0, m_shapes[i]->numVertices());
+        if (m_renderLines) {
+            m_program.setAttributeValue(color, QVector3D(0.0, 1.0, 1.0));
+            glDrawArrays(GL_LINES, 0, m_shapes[i]->numVertices());
+        }
         glFinish();
         m_vaos[i]->release();
     }
