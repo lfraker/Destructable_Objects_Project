@@ -313,7 +313,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Lines On</string>
+     <string>Turn Lines On</string>
     </property>
    </widget>
   </widget>

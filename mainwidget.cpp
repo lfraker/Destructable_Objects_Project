@@ -347,6 +347,7 @@ void MainWidget::initShaders()
 {
     // Init point size
     //glPointSize(10);
+    glLineWidth(1);
 
     // Compile vertex shader
     if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
@@ -425,6 +426,13 @@ void MainWidget::paintGL()
         m_vaos[i]->bind();
         m_positionBuffers[i]->bind();
         int color = m_program.attributeLocation("color");
+        int linesBool = m_program.attributeLocation("lines");
+        if (m_renderLines) {
+            m_program.setAttributeValue(linesBool, 1.0);
+        }
+        else {
+            m_program.setAttributeValue(linesBool, 0.0);
+        }
         m_program.setAttributeValue(color, QVector3D(1.0, 1.0, 1.0));
         glDrawArrays(GL_TRIANGLES, 0, m_shapes[i]->numVertices());
 

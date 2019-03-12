@@ -102,10 +102,10 @@ void MainWindow::on_renderLinesButton_clicked() {
     m_linesRender = !m_linesRender;
     ui->openGLWidget->triggerRenderLines(m_linesRender);
     if (m_linesRender) {
-        ui->renderLinesButton->setText("Lines On");
+        ui->renderLinesButton->setText("Turn Lines Off");
     }
     else {
-        ui->renderLinesButton->setText("Lines Off");
+        ui->renderLinesButton->setText("Turn Lines On");
     }
 }
 
