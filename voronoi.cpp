@@ -28,7 +28,10 @@ QVector3D Voronoi::intersection(Triangle tri, QVector3D la, QVector3D lb){
     QVector3D p01 = p1 - p0;
     QVector3D p02 = p2 - p0;
     QVector3D lab = lb - la;
-    QVector3D i = la + (QVector3D::crossProduct(p01, p02) * (la - p0)) / (-QVector3D::crossProduct(p01, p02));
+    //QVector3D i = la + (QVector3D::crossProduct(p01, p02) * (la - p0)) / (-QVector3D::crossProduct(p01, p02));
+    QVector3D n = QVector3D::crossProduct(p01, p02);
+    QVector3D d = QVector3D::crossProduct((p0 - la), n) / QVector3D::crossProduct(lab, n);
+    QVector3D i = d * lab + la;
     return i;
 }
 
@@ -259,8 +262,13 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
             }
 
             // Build triangulation in 2D
-            QVector2D center = QVector2D(x/intersections.size(), y/intersections.size());
-
+            qDebug("max x %f, min x %f, max y %f, min y %f", maxX, minX, maxY, minY);
+            QVector2D center1 = QVector2D(x/intersections.size(), y/intersections.size() + ((maxY - minY)/3.0f));
+            QVector2D center2 = QVector2D(x/intersections.size() - ((maxX - minX)/4.5f), y/intersections.size() - ((maxY - minY)/6.0f));
+            QVector2D center3 = QVector2D(x/intersections.size() + ((maxX - minX)/4.5f), y/intersections.size() - ((maxY - minY)/6.0f));
+            qDebug("c1: %f, %f", center1.x(), center1.y());
+            qDebug("c2: %f, %f", center2.x(), center2.y());
+            qDebug("c3: %f, %f", center3.x(), center3.y());
             // Build triangles around center point
             // Translate the 2D triangulation back to 3D
             if(intersections2d.size() > 0){
@@ -287,7 +295,14 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                 for(int i = 0; i < poly.size() - 1; i++){
                     QVector4D p1 = QVector4D(poly[i].x(), poly[i].y(), 0, 1);
                     QVector4D p2 = QVector4D(poly[i + 1].x(), poly[i + 1].y(), 0, 1);
-                    QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
+                    QVector4D p3;
+                    float c1 = abs(poly[i].distanceToPoint(center1));
+                    float c2 = abs(poly[i].distanceToPoint(center2));
+                    float c3 = abs(poly[i].distanceToPoint(center3));
+                    if(c1 <= c2 && c1 <= c3) { qDebug("c1"); p3 = QVector4D(center1.x(), center1.y(), 0, 1); }
+                    if(c2 <= c1 && c2 <= c3) { qDebug("c2"); p3 = QVector4D(center2.x(), center2.y(), 0, 1); }
+                    if(c3 <= c1 && c3 <= c2) { qDebug("c3"); p3 = QVector4D(center3.x(), center3.y(), 0, 1); }
+                    //QVector4D p3 = QVector4D(center.x(), center.y(), 0, 1);
                     QVector3D l, r, t;
                     // Orient and create our new triangle
                     if(p1.x() < p2.x() && p1.x() < p3.x()){
@@ -335,6 +350,11 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                     }
                     triCleav.append(Triangle(l, r, t));
                 }
+
+                QVector4D c1 = mInv * QVector4D(center1.x(), center1.y(), 0, 1);
+                QVector4D c2 = mInv * QVector4D(center2.x(), center2.y(), 0, 1);
+                QVector4D c3 = mInv * QVector4D(center3.x(), center3.y(), 0, 1);
+                triCleav.append(Triangle(c2.toVector3D(), c3.toVector3D(), c1.toVector3D()));
 
                 // Add all the triangles to both shapes
                 for(int i = 0; i < triCleav.size(); i++){
