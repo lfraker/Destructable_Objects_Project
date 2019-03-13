@@ -21,6 +21,7 @@ protected:
     void keyPressEvent(QKeyEvent*e) override;
     bool m_splitPaused = true;
     bool m_joinPaused = true;
+    bool m_linesRender = true;
 
     void enterDestruct();
     void exitDestruct();
@@ -32,6 +33,7 @@ private slots:
     void on_tesselationTwoSlider_valueChanged(int val);
     void on_tesselationOneSlider_valueChanged(int val);
     void on_splitDepthSlider_valueChanged(int val);
+    void on_renderLinesButton_clicked();
     void on_cylinderSelect_clicked();
     void on_cubeSelect_clicked();
     void on_sphereSelect_clicked();

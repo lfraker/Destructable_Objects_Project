@@ -8,10 +8,11 @@ uniform mat4 mvp_matrix;
 
 attribute vec4 a_position;
 attribute vec2 a_texcoord;
-attribute float color;
+attribute vec3 color;
+attribute float lines;
 
 varying vec2 v_texcoord;
-varying float colr;
+varying vec3 colr;
 
 void main()
 {
@@ -21,5 +22,11 @@ void main()
     // Pass texture coordinate to fragment shader
     // Value will be automatically interpolated to fragments inside polygon faces
     //v_texcoord = a_texcoord;
-    colr = color;
+    if (lines > 0.5) {
+        colr = color;
+    }
+    else {
+        vec3 cl = vec3(min(abs(a_position.x) * 100.0, 100.0)/100.0, min(abs(a_position.y) * 100.0, 100.0)/100.0, min(abs(a_position.z) * 100.0, 100.0)/100.0);
+        colr = cl;
+    }
 }
