@@ -27,6 +27,7 @@ QVector3D Voronoi::intersection(QVector3D norm, QVector3D p0, QVector3D la, QVec
     QVector3D i = d * lab + la;
     if(i.x() > FLT_MAX || i.y() > FLT_MAX || i.z() > FLT_MAX ||
        i.x() < FLT_MIN || i.y() < FLT_MIN || i.z() < FLT_MIN){
+        qDebug("we still got a problem");
         return QVector3D(0, 0, 0);
     }
     return i;
@@ -59,9 +60,12 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
         if(!qFuzzyCompare(points[0], points[1])){
             // Generate plane separating the two points
-            qDebug("Generating plane to split (%f, %f, %f) and (%f, %f, %f)", points[0].x(), points[0].y(), points[0].z(), points[1].x(), points[1].y(), points[1].z());
             QVector3D a = QVector3D((points[0].x() + points[1].x())/2, (points[0].y() + points[1].y())/2, (points[0].z() + points[1].z())/2);
             QVector3D norm = (points[1] - points[0]).normalized();
+            qDebug("p0 (%f, %f, %f) and p1 (%f, %f, %f) and midpoint(%f, %f, %f)",
+                   points[0].x(), points[0].y(), points[0].z(),
+                   points[1].x(), points[1].y(), points[1].z(),
+                   a.x(), a.y(), a.z());
 
             for(int i = 0; i < shape->numTris(); i++){
                 float lDist = tris[i].m_left.distanceToPlane(a, norm);
@@ -85,6 +89,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                     if((lDist < 0 && rDist >= 0 && tDist >= 0) || (lDist >= 0 && rDist < 0 && tDist < 0)){
                         QVector3D i1 = intersection(norm, a, tris[i].m_right, tris[i].m_left);
                         QVector3D i2 = intersection(norm, a, tris[i].m_top, tris[i].m_left);
+                        qDebug("Distance to plane i1: %f, i2: %f", i1.distanceToPlane(a, norm), i2.distanceToPlane(a, norm));
                         if(!intersections.contains(i1)) intersections.append(i1);
                         if(!intersections.contains(i2)) intersections.append(i2);
                         if(lDist < 0){
@@ -129,6 +134,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                     else if ((rDist < 0 && lDist >= 0 && tDist >= 0) || (rDist >= 0 && lDist < 0 && tDist < 0)){
                         QVector3D i1 = intersection(norm, a, tris[i].m_left, tris[i].m_right);
                         QVector3D i2 = intersection(norm, a, tris[i].m_top, tris[i].m_right);
+                        qDebug("Distance 2o plane i1: %f, i2: %f", i1.distanceToPlane(a, norm), i2.distanceToPlane(a, norm));
                         if(!intersections.contains(i1)) intersections.append(i1);
                         if(!intersections.contains(i2)) intersections.append(i2);
                         if(rDist < 0){
@@ -174,6 +180,7 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
                     else if ((tDist < 0 && lDist >= 0 && rDist >= 0) || (tDist >= 0 && lDist < 0 && rDist < 0)){
                         QVector3D i1 = intersection(norm, a, tris[i].m_left, tris[i].m_top);
                         QVector3D i2 = intersection(norm, a, tris[i].m_right, tris[i].m_top);
+                        qDebug("Distance 3o plane i1: %f, i2: %f", i1.distanceToPlane(a, norm), i2.distanceToPlane(a, norm));
                         if(!intersections.contains(i1)) intersections.append(i1);
                         if(!intersections.contains(i2)) intersections.append(i2);
                         if(tDist < 0){
@@ -232,29 +239,22 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
             QMatrix4x4 mInv = m.inverted();
 
             // Convert 3D points on plane to 2D for triangulation
-            float minX = std::numeric_limits<float>::max();
-            float minY = std::numeric_limits<float>::max();
-            float maxX = -std::numeric_limits<float>::max();
-            float maxY = -std::numeric_limits<float>::max();
-            float x = 0;
-            float y = 0;
             int leftMost = -1;
+            float minX = FLT_MAX;
             QVarLengthArray<QVector2D> intersections2d;
             for(int i = 0; i < intersections.size(); i++){
                 qDebug("intersections %i: %f, %f, %f", i, intersections[i].x(), intersections[i].y(), intersections[i].z());
                 QVector4D p = QVector4D(intersections[i].x(), intersections[i].y(), intersections[i].z(), 1);
                 QVector4D p2 = m * p;
-                intersections2d.append(QVector2D(p2.x(), p2.y()));
-                if(p2.x() < minX) { minX = p2.x(); leftMost = i; }
-                if(p2.y() < minY) minY = p2.y();
-                if(p2.x() > maxX) maxX = p2.x();
-                if(p2.y() > maxY) maxY = p2.y();
-                x += p2.x();
-                y += p2.y();
+                intersections2d.append(p2.toVector2D());
+                if(p2.x() < minX){
+                    minX = p2.x();
+                    leftMost = i;
+                }
             }
 
             // Build triangulation in 2D
-            QVector2D center = QVector2D(x/intersections.size(), y/intersections.size());
+            QVector2D center = (m * QVector4D(a.x(), a.y(), a.z(), 1)).toVector2D();
 
             // Build triangles around center point
             // Translate the 2D triangulation back to 3D

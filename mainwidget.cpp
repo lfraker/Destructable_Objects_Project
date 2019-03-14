@@ -197,13 +197,13 @@ void MainWidget::refreshShape() {
     Shape * temp_shape;
     switch (m_shapeType) {
         case SphereType:
-            temp_shape = new Sphere(p1, p2, 1);
+            temp_shape = new Sphere(p1, p2, 5);
             break;
         case CylinderType:
-            temp_shape = new Cylinder(p1, p2, 1);
+            temp_shape = new Cylinder(p1, p2, 5);
             break;
         case ConeType:
-            temp_shape = new Cone(p1, p2, 1);
+            temp_shape = new Cone(p1, p2, 5);
             break;
         case CubeType:
             temp_shape = new Cube(p1, p2);
@@ -420,8 +420,6 @@ void MainWidget::paintGL()
 
         // Use texture unit 0 which contains cube.png
         m_program.setUniformValue("texture", 0);
-
-        quintptr offset = 0;
 
         m_vaos[i]->bind();
         m_positionBuffers[i]->bind();
