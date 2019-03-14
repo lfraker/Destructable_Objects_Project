@@ -333,8 +333,13 @@ void Voronoi::split(Shape* shape, Shape** shapes, QVector3D origCtr, int shapeCt
 
                 // Add all the triangles to both shapes
                 for(int i = 0; i < triCleav.size(); i++){
-                    tL.append(triCleav[i]);
-                    tR.append(triCleav[i]);
+                    // sanity check
+                    if(triCleav[i].m_left != triCleav[i].m_right &&
+                       triCleav[i].m_right != triCleav[i].m_top &&
+                       triCleav[i].m_left != triCleav[i].m_top){
+                            tL.append(triCleav[i]);
+                            tR.append(triCleav[i]);
+                    }
                 }
             }
         }else{
