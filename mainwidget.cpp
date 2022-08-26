@@ -52,6 +52,8 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
+#include <QTime>
+#include <QElapsedTimer>
 
 #include <math.h>
 
@@ -91,7 +93,14 @@ void MainWidget::triggerRenderLines(bool renderLines) {
 
 
 void MainWidget::destructObj(int depth) {
+//    QTime start = QTime::currentTime();
+    QElapsedTimer tempTimer;
+    tempTimer.start();
     Shape ** temp_shapes = Voronoi::split(m_shapes[0], depth);
+    //QTime finish = QTime::currentTime();
+    //time = start.msecsTo(finish) / 1000.0;
+    qDebug("Num Tris: %i", m_shapes[0]->numTris());
+    qDebug("Timer: %i", tempTimer.elapsed());
     deleteShapeResources();
     m_numShapes = static_cast<int>(pow(2, depth));
     m_shapes = temp_shapes;

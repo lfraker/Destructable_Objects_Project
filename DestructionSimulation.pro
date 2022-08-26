@@ -1,4 +1,4 @@
-QT       += core gui widgets
+QT       += openglwidgets opengl core gui widgets
 
 TARGET = cube
 TEMPLATE = app

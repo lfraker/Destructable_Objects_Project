@@ -91,6 +91,7 @@ void MainWindow::on_unpauseJoinButton_clicked() {
 
 void MainWindow::on_tesselationTwoSlider_valueChanged(int val) {
     ui->openGLWidget->sliderChanged(false, val);
+    qDebug("Tesselation Two value: %i", val);
     exitDestruct();
 }
 
@@ -135,6 +136,7 @@ void MainWindow::exitDestruct() {
 
 void MainWindow::on_tesselationOneSlider_valueChanged(int val) {
     ui->openGLWidget->sliderChanged(true, val);
+    qDebug("Tesselation One value: %i", val);
     exitDestruct();
 }
 
